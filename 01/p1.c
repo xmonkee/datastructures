@@ -38,8 +38,7 @@ int convert(int input){
 }
 
 int genbitat(int pos){
-  int bit = 1;
-  return bit<<pos;
+  return 1<<pos;
 }
 
 int getbitat(int num, int pos){
