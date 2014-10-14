@@ -1,7 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#define MAXLEN 80
+#define MAXLEN 200
+#define LINES 500
 typedef char* charptr;
 
 void alphabetize(char *text[], int nlines);
@@ -9,7 +10,7 @@ int compar(const void *, const void *);
 
 int main(int argc, char *argv[]){
   int n = 0; /* number of lines read */
-  int s = 1; /* initial size of array of line pointers*/
+  int s = 500; /* initial size of array of line pointers*/
   int i;
   char *l, *line;
   charptr *linestmp;
@@ -19,12 +20,13 @@ int main(int argc, char *argv[]){
     l = fgets(line, MAXLEN, stdin); /* read a single line */
     if(l != NULL){
       lines[n++] = line; /* add it to array */
-      if(n==s){ /* We have exeeded number of lines and need to resize */
+/*     if(n==s){ // We have exeeded number of lines and need to resize 
         linestmp = malloc(sizeof(char*)*(s=s*2));
         for (i=0; i<n; i++) linestmp[i] = lines[i];
         free(lines);
-        lines = linestmp; /* THERE SHOULD BE A BETTER WAY TO DO THIS */
-      }
+        lines = linestmp; // THERE SHOULD BE A BETTER WAY TO DO THIS 
+      } 
+*/
     }
   }
   
