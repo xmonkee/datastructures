@@ -9,6 +9,7 @@
 #include<time.h>
 #define M 1000
 #define N 1000
+#define NUMTEST 10
 
 void work_kernel_dynamic(double **U, int m, int n)
 {
@@ -83,6 +84,7 @@ int main(int argc, char * argv[])
   
   int m = 1000;
   int n = 1000;
+  int i;
   clock_t t1, t2, t3, t;
 
   /* Declare and allocate your arrays A,B,C */
@@ -99,24 +101,27 @@ int main(int argc, char * argv[])
 
   /* time A */
   t = clock(); 
-  work_kernel_static( A, m, n);
+  for(i = 0; i<NUMTEST; i++)
+    work_kernel_static( A, m, n);
   t1 = clock() - t;
 
   /* clock B */
   t = clock();
-  work_kernel_dynamic( B, m, n);
+  for(i = 0; i<NUMTEST; i++)
+    work_kernel_dynamic( B, m, n);
   t2 = clock() - t;
 
   /* clock C */
   t = clock();
-  work_kernel_dynamic( C, m, n);
+  for(i = 0; i<NUMTEST; i++)
+    work_kernel_dynamic( C, m, n);
   t3 = clock() - t;
 
 
   /* Print out timing to stdout in seconds for each array */
-  printf("%f - statically allocated 2d array\n", (float)t1/CLOCKS_PER_SEC);
-  printf("%f - dynamically allocated 2d array, contiguous in memory\n", (float)t2/CLOCKS_PER_SEC);
-  printf("%f - dynamically allocated 2d array, distributed through memory\n", (float)t3/CLOCKS_PER_SEC);
+  printf("%f - statically allocated 2d array\n", (float)t1/CLOCKS_PER_SEC/NUMTEST);
+  printf("%f - dynamically allocated 2d array, contiguous in memory\n", (float)t2/CLOCKS_PER_SEC/NUMTEST);
+  printf("%f - dynamically allocated 2d array, distributed through memory\n", (float)t3/CLOCKS_PER_SEC/NUMTEST);
 
   /* Free memory*/
   free(B);
