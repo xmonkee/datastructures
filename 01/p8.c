@@ -10,7 +10,7 @@ int compar(const void *, const void *);
 
 int main(int argc, char *argv[]){
   int n = 0; /* number of lines read */
-  int s = 500; /* initial size of array of line pointers*/
+  int s = LINES; /* initial size of array of line pointers*/
   int i;
   char *l, *line;
   charptr *linestmp;
