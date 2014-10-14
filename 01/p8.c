@@ -20,11 +20,11 @@ int main(int argc, char *argv[]){
     l = fgets(line, MAXLEN, stdin); /* read a single line */
     if(l != NULL){
       lines[n++] = line; /* add it to array */
-     if(n==s){ // We have exeeded number of lines and need to resize 
+     if(n==s){ /* We have exeeded number of lines and need to resize */
         linestmp = malloc(sizeof(char*)*(s=s*2));
         for (i=0; i<n; i++) linestmp[i] = lines[i];
         free(lines);
-        lines = linestmp; // THERE SHOULD BE A BETTER WAY TO DO THIS 
+        lines = linestmp; /* THERE SHOULD BE A BETTER WAY TO DO THIS */
       } 
 
     }
