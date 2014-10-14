@@ -22,7 +22,7 @@ int main(int argc, char **argv){
 
   for(i=0; i<n; i++)
     for(j=0; j<n; j++)
-      printf(j <n-1 ? "%d ":"%d\n", (int)nnmat[i][j]);
+      printf(j <n-1 ? "%.1f ":"%.1f\n", nnmat[i][j]);
 
   return EXIT_SUCCESS;
 }

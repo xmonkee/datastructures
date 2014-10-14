@@ -27,8 +27,7 @@ int main(int argc, char **argv){
   for(i=0; i<n; i++){
     for(j=0; j<n; j++){
       for(k=0; k<n; k++)
-        printf(k <n-1 ? "%d ":"%d", 
-            (int)d3[0][0][i*n*n + j*n + k]);
+        printf(k <n-1 ? "%.1f ":"%.1f", d3[0][0][i*n*n + j*n + k]);
       printf("\n");
     }
   if(i<n-1) printf("\n");
@@ -38,7 +37,7 @@ int main(int argc, char **argv){
   for(i=0; i<n; i++){
     for(j=0; j<n; j++){
       for(k=0; k<n; k++)
-        printf(k <n-1 ? "%d ":"%d", (int)d3[i][j][k]);
+        printf(k <n-1 ? "%.1f ":"%.1f", d3[i][j][k]);
       printf("\n");
     }
   if(i<n-1) printf("\n");
