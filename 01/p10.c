@@ -14,17 +14,11 @@ typedef struct {
 const char * NONALPHA = " ,./?;:'\"\\\n\t\b[]{}!@#$%^&*()1234567890<>=_-=+";
 
 int repeated(char * word){
-  int i, n=0;
-  int b_rep=0;
-  while(word[n] != '\0' && !b_rep){
-    i = n+1;
-    while(word[i] != '\0' && !b_rep){
-      if(word[n]==word[i]) b_rep = 1;
-      i++;
-    } 
-    n++;
+  int n;
+  for(n=0; word[n] != '\0'; n++){
+    if(word[n]==word[n+1]) return 1;
   }
-  return b_rep;
+  return 0;
 }
 
 int add_to_list(counter * dict, char * word, int n){

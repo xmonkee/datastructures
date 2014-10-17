@@ -5,28 +5,49 @@
 #define LINES 500
 typedef char* charptr;
 
-void alphabetize(char *text[], int nlines);
-int compar(const void *, const void *);
+void swap(charptr lines[], size_t i, size_t j){
+  charptr tmp = lines[i];
+  lines[i] = lines[j];
+  lines[j] = tmp;
+}
+
+size_t partition(charptr lines[], size_t p, size_t r){
+  size_t k, i=p-1;
+  charptr X;
+  X = lines[r];
+  for(k=p; k<r; k++)
+    if(strcmp(lines[k], X) <= 0) 
+      swap(lines, ++i, k);
+  swap(lines, ++i, r);
+  return i;
+}
+
+void mysort(charptr lines[], size_t p, size_t r){
+  if(p<r){
+    size_t q = partition(lines, p, r);
+    mysort(lines, p, q-1);
+    mysort(lines, q+1, r);
+  }
+  return;
+}
+
+void alphabetize(charptr lines[], size_t nlines){
+  mysort(lines, 0, nlines-1);
+}
+
 
 int main(int argc, char *argv[]){
-  int n = 0; /* number of lines read */
+  size_t n = 0; /* number of lines read */
   int s = LINES; /* initial size of array of line pointers*/
   int i;
   char *l, *line;
   charptr *linestmp;
   charptr *lines = malloc(sizeof(char*)*s); /* array storing pointers to lines */
-  while(!feof(stdin)) {
+  while(!feof(stdin) && n<LINES) {
     line = malloc(sizeof(char)*MAXLEN);
     l = fgets(line, MAXLEN, stdin); /* read a single line */
     if(l != NULL){
       lines[n++] = line; /* add it to array */
-     if(n==s){ /* We have exeeded number of lines and need to resize */
-        linestmp = malloc(sizeof(char*)*(s=s*2));
-        for (i=0; i<n; i++) linestmp[i] = lines[i];
-        free(lines);
-        lines = linestmp; /* THERE SHOULD BE A BETTER WAY TO DO THIS */
-      } 
-
     }
   }
   
@@ -34,14 +55,5 @@ int main(int argc, char *argv[]){
 
   for(i=0; i<n; printf("%s", lines[i++]));
   return EXIT_SUCCESS;
-}
-
-
-void alphabetize(charptr lines[], int nlines){
-  qsort(lines, nlines, sizeof(char *), *compar);
-}
-
-int compar(const void *p1, const void *p2){
-  return strcmp(*(charptr *)p1, *(charptr *)p2); 
 }
 
