@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <float.h>
 #include "p1.h"
 
 void populate_array(double **L, size_t *n, size_t *m){
@@ -17,26 +18,31 @@ void populate_array(double **L, size_t *n, size_t *m){
          L[*n][m[*n]]=atof(token);
          m[*n] += 1;
       }
+      L[*n][m[*n]]=DBL_MAX;
       *n += 1;
       line = tofree; //reset line to beginning of alloced space
    }
    free(tofree); free(token);
    fclose(f);
 }
+
 void print_double_array(double *l, size_t m){
-   for(int j=0; j<m; j++)
+   int j;
+   for(j=0; j<m; j++)
       printf("%1.1lf ", l[j]);
    printf("\n");
 }
 
 void print_size_array(size_t *l, size_t m){
-   for(int j=0; j<m; j++)
+   int j;
+   for(j=0; j<m; j++)
       printf("%d ", (int)l[j]);
    printf("\n");
 }
 
 void print_arrays(double **L, size_t n, size_t *m){
-   for(int i = 0; i<n; i++){
+   int i;
+   for(i = 0; i<n; i++){
       print_double_array(L[i], m[i]);
    }
 }
@@ -46,9 +52,7 @@ int main(int argc, char *argv[]){
    double **L = malloc(sizeof(double*)*MAXL);
    size_t *m = malloc(sizeof(size_t)*MAXL);
    populate_array(L, &n, m);
-   printf("Given arrays:\n");
    print_arrays(L, n, m);
-   printf("\n");
 
    //Init the first data structure
    S1 *s1 = malloc(sizeof(S1));
@@ -58,6 +62,13 @@ int main(int argc, char *argv[]){
    //do a search for x in s1
    s1_search(r1, s1, 5.0);
    print_size_array(r1, n);
+
+   //Init the second data structure
+   S2 *s2 = malloc(sizeof(S2));
+   s2_init(s2, L, n, m);
+   print_double_array(s2->U, s2->k);
+
+   return 0;
 }
 
 
