@@ -2,3 +2,6 @@
 *.swp
 *.lock
 *.DS_Store
+*.zip
+*.tar.gz
+*.pdf
