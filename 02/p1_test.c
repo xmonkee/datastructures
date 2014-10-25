@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <float.h>
 #include "p1.h"
 
 void populate_array(double **L, size_t *n, size_t *m){
@@ -18,7 +17,6 @@ void populate_array(double **L, size_t *n, size_t *m){
          L[*n][m[*n]]=atof(token);
          m[*n] += 1;
       }
-      L[*n][m[*n]]=DBL_MAX;
       *n += 1;
       line = tofree; //reset line to beginning of alloced space
    }
@@ -51,23 +49,34 @@ int main(int argc, char *argv[]){
    size_t n;
    double **L = malloc(sizeof(double*)*MAXL);
    size_t *m = malloc(sizeof(size_t)*MAXL);
+   if(argc < 2){
+      printf("Enter search term");
+      return -1;
+   }
+   double x = atof(argv[1]); //search term from command line
+
    populate_array(L, &n, m);
-   print_arrays(L, n, m);
+
+   size_t *results = malloc(sizeof(size_t)*n);
+   print_size_array(m, n);
 
    //Init the first data structure
    S1 *s1 = malloc(sizeof(S1));
    s1_init(s1, L, n, m);
-   //we will store the results of the search operation in r1
-   size_t *r1 = malloc(sizeof(size_t)*n);
    //do a search for x in s1
-   s1_search(r1, s1, 5.0);
-   print_size_array(r1, n);
+   s1_search(results, s1, x);
+   //print results
+   print_size_array(results, n);
+   //destory s1;
+   s1_destroy(s1);
 
    //Init the second data structure
    S2 *s2 = malloc(sizeof(S2));
    s2_init(s2, L, n, m);
-   print_double_array(s2->U, s2->k);
-
+   //do a search for x in s2;
+   s2_search(results, s2, x);
+   print_size_array(results, n);
+   
    return 0;
 }
 
