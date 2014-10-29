@@ -6,3 +6,4 @@
 *.tar.gz
 *.pdf
 *.o
+*.test

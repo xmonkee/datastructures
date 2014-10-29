@@ -1,0 +1,13 @@
+#p1:
+
+Files: 
+   p1.h : data types and function prototypes
+   p1.c : the datastructur functions - init, search and destroy
+   p1_test.c : reads the arrays file, runs the random searches, outputs the results
+
+Compilation: gcc p1.c p1_test.c
+
+Usage: running the program will provide the usaage instructions. It expects the input arrays to the in the same format as supplied by the instructors.
+
+
+

@@ -20,9 +20,8 @@ void s1_init(S1 *s1, double **L, size_t n, size_t *m){
    int i;
    s1->L = malloc(sizeof(double*)*n);
    for(i=0; i < n; i++){
-      s1->L[i] = malloc(sizeof(double)*(m[i]+1));
+      s1->L[i] = malloc(sizeof(double)*(m[i]));
       memmove((void*)s1->L[i], (const void*)L[i], sizeof(double)*m[i]);
-      s1->L[i][m[i]]=DBL_MAX;
    }
    s1->m = malloc(sizeof(size_t)*n);
    memmove((void*)s1->m, (const void*)m, sizeof(size_t)*n);
@@ -53,8 +52,8 @@ void s2_init(S2 *s2, double **L, size_t n, size_t *m){
    int minidx; //index into runningidx
    for(i = k = 0; i < n; i++)
       k += m[i];
-   s2->U = malloc(sizeof(double)*(k+1)); //k+1 because of sentinel
-   s2->idx = malloc(sizeof(size_t*)*(k+1));
+   s2->U = malloc(sizeof(double)*(k)); //k+1 because of sentinel
+   s2->idx = malloc(sizeof(size_t*)*(k));
    for(j = 0; j < n; j++)
       runningidx[j] = 0; //initalize all indexes to 0
    for(i = 0; i < k+1; i++){
@@ -84,5 +83,87 @@ void s2_search(size_t *results, S2 *s2, double x){
    int s = binary_search(s2->U, s2->k, x);
    for(i=0; i < s2->n; i++)
       results[i] = s2->idx[s][i];
+}
+
+void s2_destroy(S2 *s2){
+   int i;
+   free(s2->U);
+   for(i=0; i<s2->k+1; i++)
+      free(s2->idx[i]);
+   free(s2->idx);
+   free(s2);
+}
+   
+void s3_init(S3 *s3, double** L, size_t n, size_t *m){
+   int i,j,k,l,comp,len;
+   double tmp1, tmp2;
+   double **M = malloc(sizeof(double*)*n);
+   size_t **p1 = malloc(sizeof(size_t*)*n);
+   size_t **p2 = malloc(sizeof(size_t*)*n);
+   size_t *Msize = malloc(sizeof(size_t)*n);
+
+   //We initialize the last (un)augmented array
+   M[n-1] = malloc(sizeof(double)*(m[n-1]+1));
+   p1[n-1] = malloc(sizeof(size_t)*(m[n-1]+1));
+   p2[n-1] = malloc(sizeof(size_t)*(m[n-1]+1));
+   Msize[n-1]=0;
+   Msize[n-1] = len = m[n-1];
+   for(i=0; i<len+1; i++){
+      tmp1 = L[n-1][i];
+      if(i==len) tmp1 = DBL_MAX;
+      M[n-1][i] = tmp1;
+      p1[n-1][i] = i;
+      p2[n-1][i] = 0;
+   }
+
+   for(i=n-2; i>=0; i--){
+      j = k = 0;
+      l=1;
+      Msize[i] = len = m[i]+Msize[i+1]/2;
+      M[i] = malloc(sizeof(double)*(len+1));
+      p1[i] = malloc(sizeof(size_t)*(len+1));
+      p2[i] = malloc(sizeof(size_t)*(len+1));
+      for(j=0; j< len+1; j++){
+         tmp1 = k < m[i] ? L[i][k] : DBL_MAX;
+         tmp2 = l < Msize[i+1] ? M[i+1][l] : DBL_MAX;
+         comp = tmp1 <= tmp2;
+         M[i][j] = comp ? tmp1 : tmp2;
+         p1[i][j] = k;
+         p2[i][j] = l;
+         k += comp? 1 : 0;
+         l += comp? 0 : 2;
+      }
+   }
+
+   s3->M = M;
+   s3->Msize = Msize;
+   s3->p1 = p1;
+   s3->p2 = p2;
+   s3->n = n;
+}
+   
+void s3_search(size_t *result, S3 *s3, double x){
+   int i, p, len;
+   p = binary_search(s3->M[0], s3->Msize[0], x);
+   for(i=0; i < s3->n; i++){
+      if(s3->M[i][p-1] >= x) p = p-1 ;
+      result[i] = s3->p1[i][p];
+      p = s3->p2[i][p];
+   }
+}
+
+void s3_destroy(S3 *s3){
+   int i;
+   for(i=0;i<s3->n;i++){
+      free(s3->M[i]);
+      free(s3->p1[i]);
+      free(s3->p2[i]);
+   }
+   
+   free(s3->M);
+   free(s3->Msize);
+   free(s3->p1);
+   free(s3->p2);
+   free(s3);
 }
 
