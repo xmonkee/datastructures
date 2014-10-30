@@ -6,7 +6,7 @@
 
 #define printtime() (time_old = time, \
       time = clock(), \
-      printf("Time taken: %1.3f\n\n", (double)(time - time_old)/CLOCKS_PER_SEC));
+      printf("Time taken: %1.7f\n\n", (double)(time - time_old)/CLOCKS_PER_SEC));
 
 void populate_array(double **L, size_t *n, size_t *m, char *filename){
    char *word, *tofree, c;
@@ -16,14 +16,11 @@ void populate_array(double **L, size_t *n, size_t *m, char *filename){
    f = fopen(filename, "r");
    tofree = word = malloc(sizeof(char)*100);
    *n = 0;
-   while((c = getc(f))!= EOF){
+   while((c = getc(f))!= EOF && *n < MAXL){
       if(c==' '){ 
-         *word = '\0';
-         word = tofree;
+         *word = '\0'; word = tofree;
          if(newline) {
-            newline = 0;
-            i = 0;
-            m[*n] = atoi(word);
+            newline = 0; i = 0; m[*n] = atoi(word);
             L[*n] = malloc(sizeof(double)*m[*n]);
          } else { 
             L[*n][i++] = strtod(word, NULL); 
@@ -31,15 +28,11 @@ void populate_array(double **L, size_t *n, size_t *m, char *filename){
          continue;
       }
       if(c=='\n'){
-         (*n)++;
-         newline = 1;
-         word = tofree;
-         continue;
+         (*n)++; newline = 1; word = tofree; continue;
       }
       *word++ = c;
    }
-   free(tofree);
-   fclose(f);
+   free(tofree); fclose(f);
 }
 
 void write_array(size_t *l, size_t m, FILE *f){
