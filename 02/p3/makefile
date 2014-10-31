@@ -1,13 +1,14 @@
-all: test
+all: test clean
 
-test: tree.a
-	gcc tree.a test.c -o test
+test: libtree.a
+	gcc -o bin/test -Ltree -llib -Iinclude src/test.c
+	rm -f *.o
 
-tree.a: tree.o
-	ar rs tree.a stack.o tnw.o tree.o
+libtree.a: objs
+	ar cr lib/libtree.a stack.o tnw.o tree.o
 
-tree.o:
-	gcc -c stack.c tnw.c tree.c
+objs:
+	gcc -c src/stack.c src/tnw.c src/tree.c -Iinclude
 
 clean:
-	rm -rf *.o tree.a test
+	rm lib/* bin/* *.o
