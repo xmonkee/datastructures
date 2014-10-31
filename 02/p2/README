@@ -6,7 +6,7 @@ Files:
    dict.c : the dictionary functions - init, insert, delete, find and destroy
    run.c : The interactive program
 
-Compilation: gcc *.c -o p2.o
+Compilation: gcc *.c
 
-Usage: ./p2.o
+Usage: ./a.out
 

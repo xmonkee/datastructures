@@ -34,6 +34,7 @@ int main(){
    printf("\n");
    printf("isBST: %d\n" ,isBST(arr[7]));
    printf("isBST_recursive: %d\n" ,isBST_recursive(arr[7]));
+   return 1;
 }
 
 void tree_print(Tree_node *node){

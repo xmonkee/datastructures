@@ -29,7 +29,6 @@ void * stack_pop(Stack **s){
 
 
 void stack_print(Stack *s, char * (*tostr)(void *data)){
-   void *data;
    while(!stack_is_empty(s)){;
       printf("%s\n", tostr(s->data));
       s = s->rest;
