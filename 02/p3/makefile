@@ -1,4 +1,4 @@
-all: test
+all: test clean
 
 test: tree.a
 	gcc tree.a test.c -o test
@@ -10,4 +10,4 @@ tree.o:
 	gcc -c stack.c tnw.c tree.c
 
 clean:
-	rm -rf *.o tree.a test
+	rm -rf *.o tree.a
