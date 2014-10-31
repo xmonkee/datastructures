@@ -1,13 +1,22 @@
+<<<<<<< HEAD
 all: test clean
+=======
+all: lib test
+>>>>>>> c18111cc8ff1294f18094c44df367cd3d8dc1053
 
-test: tree.a
-	gcc tree.a test.c -o test
+test:
+	gcc -o bin/test src/test.c -Llib -ltree -Iinclude
 
-tree.a: tree.o
-	ar rs tree.a stack.o tnw.o tree.o
+lib: objs
+	ar cr lib/libtree.a stack.o tnw.o tree.o
+	rm -f *.o
 
-tree.o:
-	gcc -c stack.c tnw.c tree.c
+objs:
+	gcc -c src/stack.c src/tnw.c src/tree.c -Iinclude
 
 clean:
+<<<<<<< HEAD
 	rm -rf *.o tree.a
+=======
+	rm -rf lib/* bin/* *.o
+>>>>>>> c18111cc8ff1294f18094c44df367cd3d8dc1053

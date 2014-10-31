@@ -7,3 +7,5 @@
 *.pdf
 *.o
 *.test
+bin/
+lib/

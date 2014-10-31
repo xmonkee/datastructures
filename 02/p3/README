@@ -1,12 +1,14 @@
 Problem 3 - Verifying BST
 Author: Mayank Mandava
 
+Compilation: make
+/lib/libtree.a : library containing isBST and isBST_recursive
+/bin/test: executable to test functions on a small tree
+
 Files: 
-   stack.h/stach.c: generic stack structure used for non-recursive isBST
-   tnw.h/tnw.c: Tree node wrapper structure. Used in conjunction with the stack to keep track of interval limits for each subtree
-   tree.h/tree.c: The verification functions isBST(Tree_node * tree) and isBST_recursive(Tree_node * tree). Debugging can be enabled in tree.h to get display of the stack usage. 
+   stack.c: generic stack structure used for non-recursive isBST
+   tnw.c: Tree node wrapper structure. Used in conjunction with the stack to keep track of interval limits for each subtree
+   tree.c: The verification functions isBST(Tree_node * tree) and isBST_recursive(Tree_node * tree). Debugging can be enabled in tree.h to get display of the stack usage. 
    test.c: Optional test code for the verification functions. 
 
-Compilation: gcc *.c
-Usage: ./a.out (runs the test function in test.c)
 
