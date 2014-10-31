@@ -1,0 +1,12 @@
+Problem 2 - Interactive Dictionary
+Author: Mayank Mandava
+
+Files: 
+   dict.h : data type and dictionary function prototypes
+   dict.c : the dictionary functions - init, insert, delete, find and destroy
+   run.c : The interactive program
+
+Compilation: gcc *.c -o p2.o
+
+Usage: ./p2.o
+

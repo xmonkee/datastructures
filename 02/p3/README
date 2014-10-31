@@ -1,0 +1,12 @@
+Problem 3 - Verifying BST
+Author: Mayank Mandava
+
+Files: 
+   stack.h/stach.c: generic stack structure used for non-recursive isBST
+   tnw.h/tnw.c: Tree node wrapper structure. Used in conjunction with the stack to keep track of interval limits for each subtree
+   tree.h/tree.c: The verification functions isBST(Tree_node * tree) and isBST_recursive(Tree_node * tree). Debugging can be enabled in tree.h to get display of the stack usage. 
+   test.c: Optional test code for the verification functions. 
+
+Compilation (uses main() in test.c): gcc *.c -o p3.o
+Usage: ./p3.o
+

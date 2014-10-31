@@ -23,7 +23,7 @@ void * stack_pop(Stack **s){
    void *data = (*s)->data;
    Stack *tofree = *s; 
    *s = (*s)->rest;
-   //free(tofree);
+   free(tofree);
    return data;
 }
 

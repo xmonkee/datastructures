@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "p2.h"
+#include "dict.h"
 
 #define ADD "add"
 #define DELETE "delete"
@@ -39,7 +39,7 @@ int main(){
          if(d_insert(root, word, def)) 
             printf("Adding \"%s\" to dictionary\n", word); 
          else 
-            printf("Couldn't add\n");
+            printf("Couldn't add \"%s\"\n", word);
       }
 
       //Delete Case
@@ -48,13 +48,13 @@ int main(){
          if(d_delete(root, word)) 
             printf("Deleting \"%s\" from dictionary\n", word); 
          else 
-            printf("Couldn't delete\n");
+            printf("Couldn't delete \"%s\"\n", word);
       }
 
       //Find Case
       else if(strcmp(FIND, instr) == 0){
          word = strsep(&input, " \n");
-         if((def = d_find(root, word))==NULL) printf("Couldn't find\n");
+         if((def = d_find(root, word))==NULL) printf("Couldn't find \"%s\"\n", word);
          else printf("%s: %s\n",word, def);
       }
 

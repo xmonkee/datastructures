@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <float.h>
 #include <string.h>
-#include "p1.h"
+#include "structures.h"
 
 int binary_search(double *a, size_t size, double x){
    int max = size;
@@ -17,15 +17,17 @@ int binary_search(double *a, size_t size, double x){
 }
 
 void s1_init(S1 *s1, double **L, size_t n, size_t *m){
+   long size=0;
    int i;
-   s1->L = malloc(sizeof(double*)*n);
+   s1->L = newlloc(sizeof(double*)*n);
    for(i=0; i < n; i++){
-      s1->L[i] = malloc(sizeof(double)*(m[i]));
+      s1->L[i] = newlloc(sizeof(double)*(m[i]));
       memmove((void*)s1->L[i], (const void*)L[i], sizeof(double)*m[i]);
    }
-   s1->m = malloc(sizeof(size_t)*n);
+   s1->m = newlloc(sizeof(size_t)*n);
    memmove((void*)s1->m, (const void*)m, sizeof(size_t)*n);
    s1->n = n;
+   printf("Size usage (in MB): %f\n", (float)size/MEGABYTE);
 }
 
 void s1_search(size_t *results, S1 *s1, double x){
@@ -45,6 +47,7 @@ void s1_destroy(S1 *s1){
 }
   
 void s2_init(S2 *s2, double **L, size_t n, size_t *m){
+   long size=0;
    int i,j;
    int k; //stores total length of all L's
    size_t runningidx[n]; //keeps current index into all L's
@@ -52,13 +55,13 @@ void s2_init(S2 *s2, double **L, size_t n, size_t *m){
    int minidx; //index into runningidx
    for(i = k = 0; i < n; i++)
       k += m[i];
-   s2->U = malloc(sizeof(double)*(k)); //k+1 because of sentinel
-   s2->idx = malloc(sizeof(size_t*)*(k));
+   s2->U = newlloc(sizeof(double)*(k)); //k+1 because of sentinel
+   s2->idx = newlloc(sizeof(size_t*)*(k));
    for(j = 0; j < n; j++)
       runningidx[j] = 0; //initalize all indexes to 0
    for(i = 0; i < k+1; i++){
       minidx = 0;
-      s2->idx[i] = malloc(sizeof(size_t)*n);
+      s2->idx[i] = newlloc(sizeof(size_t)*n);
       for(j=0; j < n; j++){
          s2->idx[i][j] = runningidx[j];
 
@@ -76,6 +79,7 @@ void s2_init(S2 *s2, double **L, size_t n, size_t *m){
    }
    s2->k = k;
    s2->n = n;
+   printf("Size usage (in MB): %f\n", (float)size/MEGABYTE);
 }
 
 void s2_search(size_t *results, S2 *s2, double x){
@@ -95,17 +99,18 @@ void s2_destroy(S2 *s2){
 }
    
 void s3_init(S3 *s3, double** L, size_t n, size_t *m){
+   long size=0;
    int i,j,k,l,comp,len;
    double tmp1, tmp2;
-   double **M = malloc(sizeof(double*)*n);
-   size_t **p1 = malloc(sizeof(size_t*)*n);
-   size_t **p2 = malloc(sizeof(size_t*)*n);
-   size_t *Msize = malloc(sizeof(size_t)*n);
+   double **M = newlloc(sizeof(double*)*n);
+   size_t **p1 = newlloc(sizeof(size_t*)*n);
+   size_t **p2 = newlloc(sizeof(size_t*)*n);
+   size_t *Msize = newlloc(sizeof(size_t)*n);
 
    //We initialize the last (un)augmented array
-   M[n-1] = malloc(sizeof(double)*(m[n-1]+1));
-   p1[n-1] = malloc(sizeof(size_t)*(m[n-1]+1));
-   p2[n-1] = malloc(sizeof(size_t)*(m[n-1]+1));
+   M[n-1] = newlloc(sizeof(double)*(m[n-1]+1));
+   p1[n-1] = newlloc(sizeof(size_t)*(m[n-1]+1));
+   p2[n-1] = newlloc(sizeof(size_t)*(m[n-1]+1));
    Msize[n-1]=0;
    Msize[n-1] = len = m[n-1];
    for(i=0; i<len+1; i++){
@@ -120,9 +125,9 @@ void s3_init(S3 *s3, double** L, size_t n, size_t *m){
       j = k = 0;
       l=1;
       Msize[i] = len = m[i]+Msize[i+1]/2;
-      M[i] = malloc(sizeof(double)*(len+1));
-      p1[i] = malloc(sizeof(size_t)*(len+1));
-      p2[i] = malloc(sizeof(size_t)*(len+1));
+      M[i] = newlloc(sizeof(double)*(len+1));
+      p1[i] = newlloc(sizeof(size_t)*(len+1));
+      p2[i] = newlloc(sizeof(size_t)*(len+1));
       for(j=0; j< len+1; j++){
          tmp1 = k < m[i] ? L[i][k] : DBL_MAX;
          tmp2 = l < Msize[i+1] ? M[i+1][l] : DBL_MAX;
@@ -140,6 +145,7 @@ void s3_init(S3 *s3, double** L, size_t n, size_t *m){
    s3->p1 = p1;
    s3->p2 = p2;
    s3->n = n;
+   printf("Size usage (in MB): %f\n", (float)size/MEGABYTE);
 }
    
 void s3_search(size_t *result, S3 *s3, double x){

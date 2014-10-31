@@ -2,13 +2,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "p1.h"
+#include <math.h>
+#include "structures.h"
 
 #define printtime() (time_old = time, \
       time = clock(), \
       printf("Time taken: %1.7f\n\n", (double)(time - time_old)/CLOCKS_PER_SEC));
 
 void populate_array(double **L, size_t *n, size_t *m, char *filename){
+   long size=0;
    char *word, *tofree, c;
    FILE *f;
    int newline = 1; 
@@ -21,7 +23,7 @@ void populate_array(double **L, size_t *n, size_t *m, char *filename){
          *word = '\0'; word = tofree;
          if(newline) {
             newline = 0; i = 0; m[*n] = atoi(word);
-            L[*n] = malloc(sizeof(double)*m[*n]);
+            L[*n] = newlloc(sizeof(double)*m[*n]);
          } else { 
             L[*n][i++] = strtod(word, NULL); 
          }
@@ -33,6 +35,7 @@ void populate_array(double **L, size_t *n, size_t *m, char *filename){
       *word++ = c;
    }
    free(tofree); fclose(f);
+   printf("Size usage (in MB): %f\n", (float)size/MEGABYTE);
 }
 
 void write_array(size_t *l, size_t m, FILE *f){
@@ -45,6 +48,7 @@ void write_array(size_t *l, size_t m, FILE *f){
 
 int main(int argc, char *argv[]){
    int i,numtests, verbose = 0;
+   float exp;
    FILE *of;
    size_t n;
    clock_t time_old, time;
@@ -54,7 +58,7 @@ int main(int argc, char *argv[]){
       printf("arrayfile is the file containing the input arrays\n"
              "n-searches is number of random searches per datastructure\n" 
              "outfile (optional) if you want to save the result of each search\n"
-             "Please note there is a SIGNIFICANT overhead for writing the outfile\n");
+             "Please note there is a significant overhead for writing the outfile\n");
       return -1;
    }
    if(argc == 4){
@@ -74,14 +78,17 @@ int main(int argc, char *argv[]){
    time = clock();
 
    populate_array(L, &n, m, argv[1]);
+   srand((int)clock());
    printf("Read %d arrays\n", n);
    printtime();
    size_t *results = malloc(sizeof(size_t)*n);
 
    printf("Creating %d random search numbers\n", numtests);
    double *tests = malloc(sizeof(double)*numtests);
-   for(i=0; i<numtests; i++)
-      tests[i] = (double)rand()/RAND_MAX*150.0;
+   for(i=0; i<numtests; i++){
+      exp = pow(0.1,rand() % 10);
+      tests[i] = ((((double)rand())/RAND_MAX)*150.0)*exp;
+   }
    printtime();
 
    printf("Creating datastructure #1\n");

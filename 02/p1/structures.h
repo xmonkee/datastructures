@@ -1,4 +1,6 @@
 #define MAXL 200
+#define newlloc(s) malloc((s)); size+=(s);
+#define MEGABYTE 1000000
 
 typedef struct S1_ {
    double **L; //holds the L arrays

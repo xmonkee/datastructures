@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "p2.h"
+#include "dict.h"
 
 d_node *d_init(void){
    d_node *d = malloc(sizeof(d_node));
