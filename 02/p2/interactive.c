@@ -23,7 +23,7 @@ int main(){
                 "5) exit [or ^d]\n";
    printf("%s", menu);
 
-   while(fgets(input, MAXLEN, stdin)!=NULL){
+   while(printf(">>> "), fgets(input, MAXLEN, stdin)!=NULL){
       instr = strsep(&input, " \n");
 
       //ADD case
@@ -73,5 +73,6 @@ int main(){
    free(tofree);
    d_destroy(root);
    printf("Bye \n");
+   return 1;
 }
 
