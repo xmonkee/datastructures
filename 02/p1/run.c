@@ -41,7 +41,7 @@ void populate_array(double **L, size_t *n, size_t *m, char *filename){
 void write_array(size_t *l, size_t m, FILE *f){
    int j;
    for(j=0; j<m; j++)
-      fprintf(f, "%d ", l[j]);
+      fprintf(f, "%d ", (int)l[j]);
    fprintf(f, "\n");
 }
 
@@ -74,12 +74,12 @@ int main(int argc, char *argv[]){
    size_t *m = malloc(sizeof(size_t)*MAXL);
    numtests = atoi(argv[2]);
 
-   printf("Reading file\n", n);
+   printf("Reading file\n");
    time = clock();
 
    populate_array(L, &n, m, argv[1]);
    srand((int)clock());
-   printf("Read %d arrays\n", n);
+   printf("Read %d arrays\n", (int)n);
    printtime();
    size_t *results = malloc(sizeof(size_t)*n);
 

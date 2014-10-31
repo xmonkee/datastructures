@@ -149,7 +149,7 @@ void s3_init(S3 *s3, double** L, size_t n, size_t *m){
 }
    
 void s3_search(size_t *result, S3 *s3, double x){
-   int i, p, len;
+   int i, p;
    p = binary_search(s3->M[0], s3->Msize[0], x);
    for(i=0; i < s3->n; i++){
       if(s3->M[i][p-1] >= x) p = p-1 ;
