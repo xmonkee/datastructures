@@ -9,7 +9,8 @@ Files:
 Compilation: gcc *.c -lm
 
 Usage: The program, without any arguments, will provide running instructions
-Typical Usage: ./a.out arrayfile number-of-searches [outputfile]
+Typical Usage: ./a.out /path/to/arrays 1000000 output.txt
+Excluding output.txt would make the code faster since there is overhead to writing the output file
 
 Notes: The program leaves it up to the user the supply the input array file and the number of random searches to run on the datastructures. It will output the stats about running time and space usage of each strucutre on the screen and optionally save the output of each search in a file. Running the program will provide the usaage instructions. It expects the input arrays to the in the same format as supplied by the instructors.
 
