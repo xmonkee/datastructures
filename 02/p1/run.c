@@ -35,7 +35,7 @@ void populate_array(double **L, size_t *n, size_t *m, char *filename){
       *word++ = c;
    }
    free(tofree); fclose(f);
-   printf("Size usage (in MB): %f\n", (float)size/MEGABYTE);
+   printf("Memory usage (in MB): %f\n", (float)size/MEGABYTE);
 }
 
 void write_array(size_t *l, size_t m, FILE *f){

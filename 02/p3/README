@@ -7,6 +7,6 @@ Files:
    tree.h/tree.c: The verification functions isBST(Tree_node * tree) and isBST_recursive(Tree_node * tree). Debugging can be enabled in tree.h to get display of the stack usage. 
    test.c: Optional test code for the verification functions. 
 
-Compilation (uses main() in test.c): gcc *.c -o p3.o
-Usage: ./p3.o
+Compilation: gcc *.c -lm
+Usage: ./a.out (runs the test function in test.c)
 

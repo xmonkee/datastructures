@@ -27,7 +27,7 @@ void s1_init(S1 *s1, double **L, size_t n, size_t *m){
    s1->m = newlloc(sizeof(size_t)*n);
    memmove((void*)s1->m, (const void*)m, sizeof(size_t)*n);
    s1->n = n;
-   printf("Size usage (in MB): %f\n", (float)size/MEGABYTE);
+   printf("Memory usage (in MB): %f\n", (float)size/MEGABYTE);
 }
 
 void s1_search(size_t *results, S1 *s1, double x){
@@ -79,7 +79,7 @@ void s2_init(S2 *s2, double **L, size_t n, size_t *m){
    }
    s2->k = k;
    s2->n = n;
-   printf("Size usage (in MB): %f\n", (float)size/MEGABYTE);
+   printf("Memory usage (in MB): %f\n", (float)size/MEGABYTE);
 }
 
 void s2_search(size_t *results, S2 *s2, double x){
@@ -145,7 +145,7 @@ void s3_init(S3 *s3, double** L, size_t n, size_t *m){
    s3->p1 = p1;
    s3->p2 = p2;
    s3->n = n;
-   printf("Size usage (in MB): %f\n", (float)size/MEGABYTE);
+   printf("Memory usage (in MB): %f\n", (float)size/MEGABYTE);
 }
    
 void s3_search(size_t *result, S3 *s3, double x){
