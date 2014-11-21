@@ -54,6 +54,9 @@ char * tostr(void *data){
 t_node *t_init(void){
    t_node * table = malloc(sizeof(t_node));
    chtbl_init(table, BUCKETS, h1, match, destroy);
+   FILE *log = fopen(LOGFILE, "w");
+   fprintf(log, "Logging\n");
+   fclose(log);
    return table;
 }
 
@@ -63,6 +66,11 @@ int t_insert(t_node *table, char *word, char *def){
    int error_code;
    Dpair * dp = dpair_new(word, def);
    error_code = chtbl_insert(table, (void *)dp);
+   if(error_code==0){
+      FILE *log = fopen(LOGFILE, "a");
+      fprintf(log, "Insert %s. Load Factor %f. Occupancy %d\n", word, (float)(table->size)/table->buckets, table->size);
+      fclose(log);
+   }
    return error_code;
 }
 
@@ -73,6 +81,9 @@ int t_delete(t_node *table, char *word){
    to_free = to_pass = dpair_new(word, "");
    if((error_code = chtbl_remove(table, (void **)&to_pass))==0){
       dpair_destroy(to_pass);
+      FILE *log = fopen(LOGFILE, "a");
+      fprintf(log, "Insert %s. Load Factor %f. Occupancy %d\n", word, (float)(table->size)/table->buckets, table->size);
+      fclose(log);
    }
    dpair_destroy(to_free);
    return error_code;
