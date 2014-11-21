@@ -2,6 +2,7 @@
 
 #define BUCKETS 100
 #define LOGFILE "chtbl.log"
+#define LOADLIMIT 3 //loading factor after which we rehash
 
 
 typedef struct CHTbl_ {
@@ -13,15 +14,16 @@ typedef struct CHTbl_ {
    List                       *table; /* array of List type -- one per bucket */
 } CHTbl;
 
-
-/*interface functions */
+/* Key value pair for hashtable */
 
 typedef struct {
    char * word;
    char * def;
 } Dpair;
 
-typedef CHTbl t_node;
+typedef CHTbl t_node; //Aliasing
+
+/* interface functions */
 
 t_node *t_init(void);
 int t_insert(t_node *table, char *word, char *def);

@@ -3,11 +3,11 @@
 #include<stdio.h>
 #include "chtbl.h"
 
-
-
-/* functions to interface between interactive and the chtbl */
-
 Dpair ** get_all_data(t_node *table);
+
+/*The following fucntions are used to create
+ * key-value pars (Dpairs) that are passed
+ * to the hashtable as data */
 
 Dpair * dpair_new(char *word, char *def){
    Dpair * dp = malloc(sizeof(Dpair));
@@ -38,6 +38,10 @@ int h1(const void *key_){
    return prehash;
 }
 
+/* "Data" functions below. These get passed to the 
+ * hashtable and list datastructures to act on the
+ * data */
+
 int match(const void *key1, const void *key2){
    if(strcmp(((Dpair*)key1)->word, ((Dpair*)key2)->word) == 0)
       return 1;
@@ -53,6 +57,11 @@ int destroy(void * data){
 char * tostr(void *data){
    return ((Dpair*)data)->word;
 }
+
+/*The folling t_functions are the interface fucntions 
+ * between our interactive layer and the hashtable.
+ * This helps us keep the interactive layer simple
+ * and the hashtable generic */
 
 t_node *t_init(void){
    t_node * table = malloc(sizeof(t_node));
@@ -83,13 +92,13 @@ void t_rehash(t_node *old){
    }
    free(old->table);
    
-
+   /* copy data back */
    old->buckets = new->buckets;
    old->table = new->table;
+   old->size = new->size;
    free(new);
    FILE *log = fopen(LOGFILE, "a");
    fprintf(log, "Rehasing\n");
-   printf("Rehasing\n");
    fclose(log);
 }
 
@@ -104,7 +113,7 @@ int t_insert(t_node *table, char *word, char *def){
       fprintf(log, "Insert %s. Load Factor %f. Occupancy %d\n", word, (float)(table->size)/table->buckets, table->size);
       fclose(log);
    }
-   if((float)(table->size)/table->buckets > 3) t_rehash(table);
+   if((float)(table->size)/table->buckets > LOADLIMIT) t_rehash(table);
    return error_code;
 }
 
@@ -140,6 +149,8 @@ int cmpfun(const void *a, const void *b){
 }
 
 Dpair ** get_all_data(t_node *table){
+   /*We use this function to make an array pointing to all the data
+    * stored in the hashtable. This works in O(n) */
    ListElmt *element;
    int i = 0;
    int j = 0;
@@ -182,7 +193,12 @@ void t_print_range(t_node *table, char * word1, char * word2){
 }
 
 void t_destroy(t_node * table){
-
+   int i;
+   for(i=0; i < table->buckets; i++){ 
+      list_destroy(&table->table[i]);
+   }
+   free(table->table);
+   free(table);
 }
 
 
@@ -268,6 +284,7 @@ int chtbl_remove(CHTbl *htbl, void **data){
             element != NULL; element = list_next(element)){
          if (htbl->match(*data, list_data(element))) {
             list_rem_next(bucket_list, prev_element, (const void **)data);
+            htbl->size--;
             return 0;
          }
          prev_element = element;
