@@ -15,8 +15,11 @@
 #define READ "read"
 
 int main(){
-   FILE *f;
+   FILE *f, *logger;
    char *tofree, *input, *instr, *word, *def, *filename;
+
+   logger = fopen(FILENAME, "w");
+
    t_node *root = t_init();
 
    tofree = input = malloc(sizeof(char)*(MAXLEN));
@@ -44,8 +47,8 @@ int main(){
          }
          if(t_insert(root, word, def)==0) {
             printf("Adding \"%s\" to dictionary\n", word); 
-       //     fprintf(logger, "Insert %s. Load Factor %f. Occupancy %d\n", word, 
-       //           (float)(root->size)/root->buckets, root->size);
+            fprintf(logger, "Insert %s. Load Factor %f. Occupancy %d\n", word, 
+                  (float)(root->size)/root->buckets, root->size);
 
          }
          else 
@@ -57,8 +60,8 @@ int main(){
          word = strsep(&input, " \n");
          if(t_delete(root, word)==0) {
             printf("Deleting \"%s\" from dictionary\n", word); 
-         //  fprintf(logger, "Deleted %s. Load Factor %f. Occupancy %d\n", word, 
-         //        (float)(root->size)/root->buckets, root->size);
+            fprintf(logger, "Deleted %s. Load Factor %f. Occupancy %d\n", word, 
+                 (float)(root->size)/root->buckets, root->size);
          }
          else 
             printf("Couldn't delete \"%s\"\n", word);
@@ -88,10 +91,11 @@ int main(){
             strsep(&input, "\"");
             def = strsep(&input, "\"");
             t_insert(root, word, def);
+            input = tofree;
          } 
          fclose(f);
-//         fprintf(logger, "Read file. Load Factor %f. Occupancy %d\n", 
-//              (float)(root->size)/root->buckets, root->size);
+         fprintf(logger, "Read file. Load Factor %f. Occupancy %d\n", 
+              (float)(root->size)/root->buckets, root->size);
       }
 
 
@@ -104,7 +108,7 @@ int main(){
    }
    free(tofree);
    t_destroy(root);
-//   fclose(logger);
+   fclose(logger);
    printf("Bye \n");
    return 1;
 }
