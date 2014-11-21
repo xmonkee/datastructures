@@ -4,6 +4,7 @@
 #include "chtbl.h"
 
 
+FILE *logger;
 
 /* functions to interface between interactive and the chtbl */
 
@@ -55,9 +56,8 @@ t_node *t_init(void){
    FILE *f;
    t_node * table = malloc(sizeof(t_node));
    chtbl_init(table, BUCKETS, h1, match, destroy);
-   f = fopen("chtbl.log","w");
+   logger =  fopen(LOGFILE,"w");
    fprintf(f, "Logging\n");
-   fclose(f);
    return table;
 }
 
@@ -67,10 +67,8 @@ int t_insert(t_node *table, char *word, char *def){
    Dpair * dp = dpair_new(word, def);
    error_code = chtbl_insert(table, (void *)dp);
    if(error_code==0){ 
-      f = fopen("chtbl.log", "a");
-      fprintf(f, "Insert %s. Load Factor %f. Occupancy %d\n", word, (float)(table->size)/table->buckets, table->size);
-      fclose(f);
-   }
+      fprintf(logger, "Insert %s. Load Factor %f. Occupancy %d\n", word, (float)(table->size)/table->buckets, table->size);
+   } 
    return error_code;
 }
 
@@ -81,9 +79,7 @@ int t_delete(t_node *table, char *word){
    to_free = to_pass = dpair_new(word, "");
    if((error_code = chtbl_remove(table, (void **)&to_pass))==0){
       dpair_destroy(to_pass);
-      f = fopen("chtbl.log", "a");
-      fprintf(f, "Delete %s. Load Factor %f. Occupancy %d\n", word, (float)(table->size)/table->buckets, table->size);
-      fclose(f);
+      fprintf(logger, "Delete %s. Load Factor %f. Occupancy %d\n", word, (float)(table->size)/table->buckets, table->size);
    }
    dpair_destroy(to_free);
    return error_code;
@@ -127,6 +123,10 @@ void t_print(t_node *table){
    return;
 }
 
+void t_destroy(t_node * table){
+   fclose(logger);
+}
+
 
 int chtbl_init(CHTbl *htbl, 
       int buckets, 
@@ -165,7 +165,7 @@ int chtbl_insert(CHTbl *htbl, const void *data){
       */
    bucket = htbl->h(data) % htbl->buckets; 
 
-   if ((error_code = list_ins_next(&htbl->table[bucket], (&htbl->table[bucket])->tail, data)) == 0)
+   if ((error_code = list_ins_next(&htbl->table[bucket], NULL, data)) == 0)
       htbl->size++; 
 
    return error_code;
