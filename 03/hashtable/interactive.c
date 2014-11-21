@@ -12,9 +12,11 @@
 #define FIND "find"
 #define PRINT "print"
 #define EXIT "exit"
+#define READ "read"
 
 int main(){
-   char *tofree, *input, *instr, *word, *def;
+   FILE *f;
+   char *tofree, *input, *instr, *word, *def, *filename;
    t_node *root = t_init();
 
    tofree = input = malloc(sizeof(char)*(MAXLEN));
@@ -67,6 +69,20 @@ int main(){
       //Print Case
       else if(strcmp(PRINT, instr) == 0){
          t_print(root);
+      }
+
+      //Read case
+      else if(strcmp(READ, instr) == 0){
+         filename = strsep(&input, " \n");
+         f = fopen(filename, "r");
+         input = tofree;
+         while(fgets(input, MAXLEN, f)!=NULL){
+            word = strsep(&input, " ");
+            strsep(&input, "\"");
+            def = strsep(&input, "\"");
+            t_insert(root, word, def);
+         } 
+         fclose(f);
       }
 
 

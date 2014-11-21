@@ -124,7 +124,6 @@ int list_add(List *list, int index, void *data){
 void list_append(List *list, void *data){
    ListElmt *node = list->tail;
    list_ins_next(list,list->tail,data);
-   printf("new list size after append: %d\n", list->size);
    return;
 }
 

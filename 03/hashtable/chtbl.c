@@ -47,6 +47,10 @@ int destroy(void * data){
    return 0;
 }
 
+char * tostr(void *data){
+   return ((Dpair*)data)->word;
+}
+
 t_node *t_init(void){
    FILE *f;
    t_node * table = malloc(sizeof(t_node));
@@ -61,7 +65,7 @@ int t_insert(t_node *table, char *word, char *def){
    int error_code;
    FILE *f;
    Dpair * dp = dpair_new(word, def);
-   error_code= chtbl_insert(table, (void *)dp);
+   error_code = chtbl_insert(table, (void *)dp);
    if(error_code==0){ 
       f = fopen("chtbl.log", "a");
       fprintf(f, "Insert %s. Load Factor %f. Occupancy %d\n", word, (float)(table->size)/table->buckets, table->size);
@@ -123,6 +127,7 @@ void t_print(t_node *table){
    return;
 }
 
+
 int chtbl_init(CHTbl *htbl, 
       int buckets, 
       int (*h)(const void *key), 
@@ -136,7 +141,7 @@ int chtbl_init(CHTbl *htbl,
    htbl->buckets = buckets;
 
    for (i = 0; i < htbl->buckets; i++)
-      list_init(&htbl->table[i], destroy, NULL, NULL);
+      list_init(&htbl->table[i], destroy, NULL, tostr);
 
    htbl->h = h;
    htbl->destroy = destroy;
@@ -160,8 +165,8 @@ int chtbl_insert(CHTbl *htbl, const void *data){
       */
    bucket = htbl->h(data) % htbl->buckets; 
 
-   if ((error_code = list_ins_next(&htbl->table[bucket], NULL, data)) == 0)
-      htbl->size++;
+   if ((error_code = list_ins_next(&htbl->table[bucket], (&htbl->table[bucket])->tail, data)) == 0)
+      htbl->size++; 
 
    return error_code;
 }
