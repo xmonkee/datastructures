@@ -16,7 +16,7 @@
 
 int main(){
    FILE *f, *logger;
-   char *tofree, *input, *instr, *word, *def, *filename;
+   char *tofree, *input, *instr, *word, *def, *filename, *word2;
 
    logger = fopen(FILENAME, "w");
 
@@ -70,10 +70,15 @@ int main(){
       //Find Case
       else if(strcmp(FIND, instr) == 0){
          word = strsep(&input, " \n");
-         if((def = t_find(root, word))==NULL) 
-            printf("Couldn't find \"%s\"\n", word);
-         else 
-            printf("%s: %s\n",word, def);
+         word2 = strsep(&input, " \n");
+         if(strsep(&input, " \n")!= NULL){ //range find
+            t_print_range(root, word, word2);
+         } else {
+            if((def = t_find(root, word))==NULL) 
+               printf("Couldn't find \"%s\"\n", word);
+            else 
+               printf("%s: %s\n",word, def);
+         }
       }
 
       //Print Case

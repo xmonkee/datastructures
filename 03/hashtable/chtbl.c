@@ -116,6 +116,32 @@ void t_print(t_node *table){
    return;
 }
 
+void t_print_range(t_node *table, char * word1, char * word2){
+   ListElmt *element;
+   int i = 0;
+   int j = 0;
+   int isprint = 0;
+   Dpair ** biglist = malloc(sizeof(Dpair*)*table->size);
+   while(i< table->size){
+      for (element = list_head(&table->table[j]); 
+            element != NULL; 
+            element = list_next(element)){
+         biglist[i] = list_data(element);
+         i++;
+      }
+      j++;
+   }
+   qsort(biglist, table->size, sizeof(Dpair*), cmpfun);
+   for(i=0; i<table->size; i++){
+      if(strcmp(biglist[i]->word, word1) >= 0 && 
+            strcmp(biglist[i]->word, word2) <= 0) 
+         printf("%s: %s\n", biglist[i]->word, biglist[i]->def);
+   }
+   free(biglist);
+   return;
+   
+}
+
 void t_destroy(t_node * table){
 }
 
