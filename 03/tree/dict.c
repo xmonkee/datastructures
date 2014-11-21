@@ -25,8 +25,23 @@ int t_insert(t_node *tree, char *key, char *value){
    error_code = tree_insert(tree, (void*)key, (void*)value);
    return error_code;
 }
-int t_delete(t_node *tree, char *key){}
-char *t_find(t_node *tree, char *key){}
+int t_delete(t_node *tree, char *key){
+   char *def;
+   int error_code;
+   error_code=tree_remove(tree, (void*)key, (void**)&def);
+   if(error_code == 0) free(def);
+   return error_code;
+}
+
+char *t_find(t_node *tree, char *key){
+   char *value;
+   int error_code;
+   if((error_code = tree_lookup(tree, key, (void**)&value))!=0)
+      return NULL;
+   else
+      return value;
+}
+
 int t_print(t_node *tree){
   // tree_print_tree(tree);
    tree_print_inorder(tree);  

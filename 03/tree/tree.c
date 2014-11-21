@@ -73,19 +73,82 @@ int tree_insert(Tree *tree, void *key, void *value){
          } // we find the insertable location
          if(left){
             parent->left = new_node;
+            new_node->parent = parent;
          } else {
             parent->right = new_node;
+            new_node->parent = parent;
          }
+
          return 0;
    }
 }
 
-int tree_remove(Tree *tree, void *key, void **value){}
-int tree_lookup(Tree *tree, void *key, void **value){
+int tree_remove(Tree *tree, void *key, void **value){
+   Tree_node * tmp_node;
+   int left;
+   if(tree_lookup(tree, key, value)!=0)
+      return 1;
    Tree_node *node = tree->root;
    while(tree->compare(node->key, key)!=0){
-     if(tree->root == NULL) return -1;
-    
+     if(tree->compare(key, node->key) < 0){
+        left = 1;
+        node = node->left;
+     } else{
+        left = 0;
+        node = node->right;
+     }
+   }
+
+   *value = node->value; //return deleted value 
+   //Now we delete
+
+   //Outer node
+   if(node->left == NULL && node->right == NULL){
+      if(tree->root == node){ //node is root
+         tree->root = NULL;
+      } else {
+         if(left) node->parent->left = NULL;
+         else node->parent->right = NULL;
+      }
+      free(node->key);
+      free(node);
+   }
+   //No left child
+   if(node->left == NULL){
+      free(node->key);
+      tmp_node = node->right;
+      node->key = node->right->key;
+      node->value = node->right->value;
+      node->left = node->right->left;
+      node->right = node->right->right;
+      free(tmp_node);
+   }
+   //No right child
+   if(node->right == NULL){
+      free(node->key);
+      tmp_node = node->left;
+      node->key = node->left->key;
+      node->value = node->left->value;
+      node->right = node->left->right;
+      node->left = node->left->left;
+      free(tmp_node);
+   }
+   return 0;
+   
+}
+
+int tree_lookup(Tree *tree, void *key, void **value){
+   Tree_node *node = tree->root;
+   if(node==NULL) return 1;
+   while(tree->compare(node->key, key)!=0){
+     if(tree->compare(key, node->key) < 0)
+        node = node->left;
+     else
+        node = node->right;
+     if(node == NULL) return 1;
+   }
+   *value = node->value;
+   return 0;
 }
 int tree_height(Tree *tree){}
 void tree_destroy(Tree *tree){}
