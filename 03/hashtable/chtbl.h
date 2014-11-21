@@ -1,6 +1,7 @@
 #include "list.h"       /* assume list implementation */
 
 #define BUCKETS 100
+#define LOGFILE "chtbl.log"
 
 
 typedef struct CHTbl_ {
@@ -27,6 +28,7 @@ int t_insert(t_node *table, char *word, char *def);
 int t_delete(t_node *table, char *word);
 char * t_find(t_node *table, char *word);
 void t_destroy(t_node *table);
+void t_print_range(t_node *table, char * word1, char *word2);
 
 /* hashtable functions */
 
