@@ -15,6 +15,7 @@
 #define READ "read"
 
 int main(){
+   FILE *f;
    char *tofree, *input, *instr, *word, *def, *filename, *word2;
    t_node *root = t_init();
    tofree = input = malloc(sizeof(char)*(MAXLEN));
