@@ -2,18 +2,20 @@
 
 typedef enum {RED, BLACK} Color;
 
-typedef struct t_node_ {
+typedef struct Tree_node_ {
    void * key;
    void * value;
-   struct t_node_ * left;
-   struct t_node_ * right;
+   struct Tree_node_ * left;
+   struct Tree_node_ * right;
+   struct Tree_node_ * parent;
+   void (*print)(void *key, void *value);
    Color color;
 } Tree_node;
 
 typedef struct Tree_{
    Tree_node * root;
-   void (*compare)(void *key1, void *key2);
-   int (*print)(void *key, void *value);
+   int (*compare)(void *key1, void *key2);
+   void (*print)(void *key, void *value);
 } Tree;
 
 /* tree functions */

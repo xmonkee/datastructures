@@ -19,10 +19,16 @@ t_node *t_init(void){
    tree_init(tree, compare, print);
    return tree;
 }
-int t_insert(t_node *node, char *key, char *value){}
-int t_delete(t_node *node, char *key){}
-char *t_find(t_node *node, char *key){}
-int t_print(t_node *node){}
-int t_print_range(t_node *node, char *word1, char *word2){}
-int t_height(t_node *node){}
-void t_destroy(t_node *node){}
+int t_insert(t_node *tree, char *key, char *value){
+   int error_code;
+   error_code = tree_insert(tree, (void*)key, (void*)value);
+   return error_code;
+}
+int t_delete(t_node *tree, char *key){}
+char *t_find(t_node *tree, char *key){}
+int t_print(t_node *tree){
+   tree_print_tree(tree);
+}
+int t_print_range(t_node *tree, char *word1, char *word2){}
+int t_height(t_node *tree){}
+void t_destroy(t_node *tree){}

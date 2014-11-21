@@ -2,6 +2,10 @@
 
 #include "tree.h"
 
+/*t_node is actully Tree, not Tree_node. Unfortunately i've had to keep
+ * this nomencluature in the interactive moduel  for consistency
+ * across all versions */
+
 typedef Tree t_node;
 
 /* tree functions */
