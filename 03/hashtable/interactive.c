@@ -42,8 +42,12 @@ int main(){
             input = tofree;
             continue;
          }
-         if(t_insert(root, word, def)==0) 
+         if(t_insert(root, word, def)==0) {
             printf("Adding \"%s\" to dictionary\n", word); 
+       //     fprintf(logger, "Insert %s. Load Factor %f. Occupancy %d\n", word, 
+       //           (float)(root->size)/root->buckets, root->size);
+
+         }
          else 
             printf("Couldn't add \"%s\"\n", word);
       }
@@ -51,8 +55,11 @@ int main(){
       //Delete Case
       else if(strcmp(DELETE, instr) == 0){
          word = strsep(&input, " \n");
-         if(t_delete(root, word)==0) 
+         if(t_delete(root, word)==0) {
             printf("Deleting \"%s\" from dictionary\n", word); 
+         //  fprintf(logger, "Deleted %s. Load Factor %f. Occupancy %d\n", word, 
+         //        (float)(root->size)/root->buckets, root->size);
+         }
          else 
             printf("Couldn't delete \"%s\"\n", word);
       }
@@ -83,6 +90,8 @@ int main(){
             t_insert(root, word, def);
          } 
          fclose(f);
+//         fprintf(logger, "Read file. Load Factor %f. Occupancy %d\n", 
+//              (float)(root->size)/root->buckets, root->size);
       }
 
 
@@ -94,7 +103,8 @@ int main(){
       input = tofree;
    }
    free(tofree);
-// t_destroy(root);
+   t_destroy(root);
+//   fclose(logger);
    printf("Bye \n");
    return 1;
 }
