@@ -7,6 +7,8 @@
 
 /* functions to interface between interactive and the chtbl */
 
+Dpair ** get_all_data(t_node *table);
+
 Dpair * dpair_new(char *word, char *def){
    Dpair * dp = malloc(sizeof(Dpair));
    dp->word = strdup(word);
@@ -20,6 +22,7 @@ void dpair_destroy(Dpair * dp){
    free(dp);
    return;
 }
+
 
 /*prehashing functions defined below*/
 
@@ -60,6 +63,36 @@ t_node *t_init(void){
    return table;
 }
 
+void t_rehash(t_node *old){
+   int old_buckets = old->buckets;
+   int new_buckets = old_buckets * 2;
+   Dpair ** biglist = get_all_data(old);
+   int i;
+   void *data;
+   t_node * new = malloc(sizeof(t_node));
+   chtbl_init(new, new_buckets, h1, match, destroy);
+   for(i=0; i< (old)->size; i++){
+      /* insert all the data into the new hashtable */
+      chtbl_insert(new, (void *)(biglist[i]));
+   }
+   
+   for(i=0; i < old->buckets; i++){ //we free the old lists
+      while(list_size(&old->table[i]) > 0){ //free each element 
+         list_rem_next(&old->table[i], NULL, (const void **) &data);
+      }
+   }
+   free(old->table);
+   
+
+   old->buckets = new->buckets;
+   old->table = new->table;
+   free(new);
+   FILE *log = fopen(LOGFILE, "a");
+   fprintf(log, "Rehasing\n");
+   printf("Rehasing\n");
+   fclose(log);
+}
+
 
 
 int t_insert(t_node *table, char *word, char *def){
@@ -71,6 +104,7 @@ int t_insert(t_node *table, char *word, char *def){
       fprintf(log, "Insert %s. Load Factor %f. Occupancy %d\n", word, (float)(table->size)/table->buckets, table->size);
       fclose(log);
    }
+   if((float)(table->size)/table->buckets > 3) t_rehash(table);
    return error_code;
 }
 
@@ -105,7 +139,7 @@ int cmpfun(const void *a, const void *b){
    return strcmp((*(Dpair**)a)->word, (*(Dpair**)b)->word);
 }
 
-void t_print(t_node *table){
+Dpair ** get_all_data(t_node *table){
    ListElmt *element;
    int i = 0;
    int j = 0;
@@ -119,6 +153,12 @@ void t_print(t_node *table){
       }
       j++;
    }
+   return biglist;
+}
+
+void t_print(t_node *table){
+   int i;
+   Dpair ** biglist = get_all_data(table);
    qsort(biglist, table->size, sizeof(Dpair*), cmpfun);
    for(i=0; i<table->size; i++){
       printf("%s: %s\n", biglist[i]->word, biglist[i]->def);
@@ -128,20 +168,8 @@ void t_print(t_node *table){
 }
 
 void t_print_range(t_node *table, char * word1, char * word2){
-   ListElmt *element;
-   int i = 0;
-   int j = 0;
-   int isprint = 0;
-   Dpair ** biglist = malloc(sizeof(Dpair*)*table->size);
-   while(i< table->size){
-      for (element = list_head(&table->table[j]); 
-            element != NULL; 
-            element = list_next(element)){
-         biglist[i] = list_data(element);
-         i++;
-      }
-      j++;
-   }
+   int i;
+   Dpair ** biglist = get_all_data(table);
    qsort(biglist, table->size, sizeof(Dpair*), cmpfun);
    for(i=0; i<table->size; i++){
       if(strcmp(biglist[i]->word, word1) >= 0 && 
@@ -154,6 +182,7 @@ void t_print_range(t_node *table, char * word1, char * word2){
 }
 
 void t_destroy(t_node * table){
+
 }
 
 
@@ -247,4 +276,5 @@ int chtbl_remove(CHTbl *htbl, void **data){
    htbl->size--;
    return 0;
 }
+
 
