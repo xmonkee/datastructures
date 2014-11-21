@@ -27,3 +27,4 @@ int tree_insert(Tree *tree, void *key, void *value);
 int tree_remove(Tree *tree, void *key, void **value);
 int tree_lookup(Tree *tree, void *key, void **value);
 int tree_height(Tree *tree);
+void tree_print_inorder(Tree *tree);
