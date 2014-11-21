@@ -1,5 +1,6 @@
 #include<stdlib.h>
 #include<stdio.h>
+#include<string.h>
 #include "tree.h"
 
 /** Red black self balancing tree */
@@ -9,8 +10,8 @@ Tree_node *tree_new_node(void *key, void *value, void(*print)(void*key, void*val
    if((node = malloc(sizeof(Tree_node)))==NULL)
       return NULL;
    node->left = node->right = node->parent = NULL;
-   node->key = key;
-   node->value = value;
+   node->key = strdup(key);
+   node->value = strdup(value);
    node->color = RED;
    node->print = print;
    return node;
@@ -18,9 +19,11 @@ Tree_node *tree_new_node(void *key, void *value, void(*print)(void*key, void*val
 
 void tree_node_print(Tree_node * node, int depth){
    int i;
-   //printf("%.*s", depth, " ");
+   if(node==NULL) return;
+   for(i=0; i<depth; i++) printf(" ");
    node->print(node->key, node->value);
-   //add recursive call
+   tree_node_print(node->left, depth+1);
+   tree_node_print(node->right, depth+1);
 }
 
 void tree_print_tree(Tree *tree){

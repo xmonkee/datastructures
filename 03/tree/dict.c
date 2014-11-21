@@ -11,7 +11,8 @@ int compare(void *key1, void *key2){
 }
 
 void print(void *key, void *value){
-   printf("%s: %s\n", (char*)key, (char*)value);
+  // printf("%s: %s\n", (char*)key, (char*)value);
+  printf("%s\n", (char*)key);
 }
 
 t_node *t_init(void){
