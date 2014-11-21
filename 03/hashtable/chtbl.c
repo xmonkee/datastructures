@@ -4,7 +4,6 @@
 #include "chtbl.h"
 
 
-FILE *logger;
 
 /* functions to interface between interactive and the chtbl */
 
@@ -56,21 +55,20 @@ t_node *t_init(void){
    FILE *f;
    t_node * table = malloc(sizeof(t_node));
    chtbl_init(table, BUCKETS, h1, match, destroy);
-   logger =  fopen(LOGFILE,"w");
    fprintf(f, "Logging\n");
    return table;
 }
+
+
 
 int t_insert(t_node *table, char *word, char *def){
    int error_code;
    FILE *f;
    Dpair * dp = dpair_new(word, def);
    error_code = chtbl_insert(table, (void *)dp);
-   if(error_code==0){ 
-      fprintf(logger, "Insert %s. Load Factor %f. Occupancy %d\n", word, (float)(table->size)/table->buckets, table->size);
-   } 
    return error_code;
 }
+
 
 int t_delete(t_node *table, char *word){
    FILE *f;
@@ -79,7 +77,6 @@ int t_delete(t_node *table, char *word){
    to_free = to_pass = dpair_new(word, "");
    if((error_code = chtbl_remove(table, (void **)&to_pass))==0){
       dpair_destroy(to_pass);
-      fprintf(logger, "Delete %s. Load Factor %f. Occupancy %d\n", word, (float)(table->size)/table->buckets, table->size);
    }
    dpair_destroy(to_free);
    return error_code;
@@ -124,7 +121,6 @@ void t_print(t_node *table){
 }
 
 void t_destroy(t_node * table){
-   fclose(logger);
 }
 
 
