@@ -52,10 +52,8 @@ char * tostr(void *data){
 }
 
 t_node *t_init(void){
-   FILE *f;
    t_node * table = malloc(sizeof(t_node));
    chtbl_init(table, BUCKETS, h1, match, destroy);
-   fprintf(f, "Logging\n");
    return table;
 }
 
@@ -63,7 +61,6 @@ t_node *t_init(void){
 
 int t_insert(t_node *table, char *word, char *def){
    int error_code;
-   FILE *f;
    Dpair * dp = dpair_new(word, def);
    error_code = chtbl_insert(table, (void *)dp);
    return error_code;
@@ -71,7 +68,6 @@ int t_insert(t_node *table, char *word, char *def){
 
 
 int t_delete(t_node *table, char *word){
-   FILE *f;
    int error_code;
    Dpair *to_free, *to_pass;
    to_free = to_pass = dpair_new(word, "");

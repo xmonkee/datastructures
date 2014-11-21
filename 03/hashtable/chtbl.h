@@ -1,7 +1,6 @@
 #include "list.h"       /* assume list implementation */
 
 #define BUCKETS 100
-#define LOGFILE "chtbl.log"
 
 
 typedef struct CHTbl_ {
