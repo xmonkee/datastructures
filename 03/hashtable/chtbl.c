@@ -23,10 +23,25 @@ void dpair_destroy(Dpair * dp){
    return;
 }
 
+/* we use the following globar variables to check for occupancy */
+short int * occupancy_matrix = NULL;
+int occupancy;
+void reset_occupancy(int buckets){
+   int i;
+   occupancy = 0;
+   if(occupancy_matrix != NULL){
+      free(occupancy_matrix);
+   }
+   occupancy_matrix = malloc(sizeof(short int)*buckets);
+   for(i=0; i<buckets; i++) occupancy_matrix[i] = 0;
+}
 
-/*prehashing functions defined below*/
+/*prehashing functions defined below
+ * The choice of function can be made in chtbl.h file*/
 
-int h1(const void *key_){
+#ifdef HASH1
+int hashfun(const void *key_){
+   /*HASH1*/
    /*Simple function that adds ascii value of each character*/
    Dpair * key = (Dpair *)key_;
    char * word = key->word;
@@ -37,6 +52,48 @@ int h1(const void *key_){
    }
    return prehash;
 }
+#endif
+
+#ifdef HASH2
+int hashfun(const void *key_){
+   /*HASH2*/
+   /*We consider the first 4 characters and treat them like a number 
+    * to the base 2^8 */
+   Dpair * key = (Dpair *)key_;
+   char * word = key->word;
+   int i, j, k;
+   int prehash = 0;
+   for(i=0; i<strlen(word) && i<4; i++){
+      k = 1;
+      for(j=4; j>i; j--)
+         k *= word[i];
+      prehash += k;
+   }
+   return prehash;
+}
+#endif
+
+#ifdef HASH3
+int hashfun(const void *key_){
+   /*HASH3*/
+   /*from http://www.cse.yorku.ca/~oz/hash.html*/
+   /*this algorithm (k=33) was first reported by dan bernstein 
+    * many years ago in comp.lang.c. another version of this 
+    * algorithm (now favored by bernstein) uses 
+    * xor: hash(i) = hash(i - 1) * 33 ^ str[i]; 
+    * the magic of number 33 (why it works better than 
+    * many other constants, prime or not) has never 
+    * been adequately explained.*/
+   Dpair * key = (Dpair *)key_;
+   char * word = key->word;
+   int i;
+   unsigned int hash = 5831;
+   for(i=0; i<strlen(word) && i<4; i++)
+      hash = hash * 33 ^ word[i]; /* hash * 33 + c */
+   return hash;
+}
+#endif
+
 
 /* "Data" functions below. These get passed to the 
  * hashtable and list datastructures to act on the
@@ -65,21 +122,22 @@ char * tostr(void *data){
 
 t_node *t_init(void){
    t_node * table = malloc(sizeof(t_node));
-   chtbl_init(table, BUCKETS, h1, match, destroy);
+   reset_occupancy(BUCKETS);
+   chtbl_init(table, BUCKETS, hashfun, match, destroy);
    FILE *log = fopen(LOGFILE, "w");
    fprintf(log, "Logging\n");
    fclose(log);
    return table;
 }
 
-void t_rehash(t_node *old){
+void t_rehash(t_node *old, int new_buckets){
    int old_buckets = old->buckets;
-   int new_buckets = old_buckets * 2;
    Dpair ** biglist = get_all_data(old);
    int i;
    void *data;
    t_node * new = malloc(sizeof(t_node));
-   chtbl_init(new, new_buckets, h1, match, destroy);
+   chtbl_init(new, new_buckets, hashfun, match, destroy);
+   reset_occupancy(new_buckets);
    for(i=0; i< (old)->size; i++){
       /* insert all the data into the new hashtable */
       chtbl_insert(new, (void *)(biglist[i]));
@@ -110,10 +168,13 @@ int t_insert(t_node *table, char *word, char *def){
    error_code = chtbl_insert(table, (void *)dp);
    if(error_code==0){
       FILE *log = fopen(LOGFILE, "a");
-      fprintf(log, "Insert %s. Load Factor %f. Occupancy %d\n", word, (float)(table->size)/table->buckets, table->size);
+      fprintf(log, "Insert %s. Load Factor %f. #items %d. #buckets %d." 
+            "#buckets used %d\n", 
+            word, (float)(table->size)/table->buckets, table->size,
+            table->buckets, occupancy);
       fclose(log);
    }
-   if((float)(table->size)/table->buckets > LOADLIMIT) t_rehash(table);
+   if((float)(table->size)/table->buckets > HIGHLOADLIMIT) t_rehash(table, table->buckets*2);
    return error_code;
 }
 
@@ -125,10 +186,15 @@ int t_delete(t_node *table, char *word){
    if((error_code = chtbl_remove(table, (void **)&to_pass))==0){
       dpair_destroy(to_pass);
       FILE *log = fopen(LOGFILE, "a");
-      fprintf(log, "Insert %s. Load Factor %f. Occupancy %d\n", word, (float)(table->size)/table->buckets, table->size);
+      fprintf(log, "Delete %s. Load Factor %f. #items %d. #buckets %d." 
+            "#buckets used %d\n", 
+            word, (float)(table->size)/table->buckets, table->size,
+            table->buckets, occupancy);
       fclose(log);
    }
    dpair_destroy(to_free);
+   if((float)(table->size)/table->buckets < LOWLOADLIMIT && 
+         (table->buckets > BUCKETS)) t_rehash(table, table->buckets/2);
    return error_code;
 }
 
@@ -201,6 +267,8 @@ void t_destroy(t_node * table){
    free(table);
 }
 
+/*Hashtable functions below. I have used the code supplied by the instructor and added whatever was missing. I wanted to keep it generic and mesh with my interactive layer, but the interface layer and my changes ended up much bigger than the original hashtable code. */
+
 
 int chtbl_init(CHTbl *htbl, 
       int buckets, 
@@ -239,8 +307,13 @@ int chtbl_insert(CHTbl *htbl, const void *data){
       */
    bucket = htbl->h(data) % htbl->buckets; 
 
-   if ((error_code = list_ins_next(&htbl->table[bucket], NULL, data)) == 0)
+   if ((error_code = list_ins_next(&htbl->table[bucket], NULL, data)) == 0){
       htbl->size++; 
+      if(occupancy_matrix[bucket] == 0){
+         occupancy_matrix[bucket] = 1;
+         occupancy++;
+      }
+   }
 
    return error_code;
 }
@@ -272,10 +345,15 @@ int chtbl_remove(CHTbl *htbl, void **data){
    bucket = htbl->h(*data)%htbl->buckets;
    bucket_list = &htbl->table[bucket];
 
-   if(htbl->match(*data, list_data(list_head(bucket_list)))){
    /* check if first element matches */
-      list_rem_next(bucket_list, NULL, (const void **)data);
+   if(htbl->match(*data, list_data(list_head(bucket_list)))){
    /* remove it if it is */
+      list_rem_next(bucket_list, NULL, (const void **)data);
+   /* alter occupancy */
+      if(occupancy_matrix[bucket]==1){
+      occupancy_matrix[bucket] = 0;
+      occupancy--;
+      }
    } else {
       /*there must be at least 2 elements since there is a data match
        * and it's not with the list head */

@@ -2,7 +2,9 @@
 
 #define BUCKETS 100
 #define LOGFILE "chtbl.log"
-#define LOADLIMIT 3 //loading factor after which we rehash
+#define HIGHLOADLIMIT 3 //upper loading factor after which we rehash
+#define LOWLOADLIMIT 1 //lower loading factor after which we rehash
+#define HASH2 //change to HASH1, HASH2 or HASH3 to use the other hashing functions
 
 
 typedef struct CHTbl_ {

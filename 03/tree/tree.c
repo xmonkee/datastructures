@@ -190,76 +190,6 @@ int tree_remove(Tree *tree, void *key, void **value){
 }
 
 
-int tree_remove_old(Tree *tree, void *key, void **value){
-   Tree_node * tmp_node;
-   int left;
-   if(tree_lookup(tree, key, value)!=0)
-      return 1;
-   Tree_node *node = tree->root;
-   while(tree->compare(node->key, key)!=0){
-     if(tree->compare(key, node->key) < 0){
-        left = 1;
-        node = node->left;
-     } else{
-        left = 0;
-        node = node->right;
-     }
-   }
-
-   *value = node->value; //return deleted value 
-   //Now we delete
-
-   //Outer node
-   if(node->left == tree->nil && node->right == tree->nil){
-      if(tree->root == node){ //node is root
-         tree->root = tree->nil;
-      } else {
-         if(left) node->parent->left = tree->nil;
-         else node->parent->right = tree->nil;
-      }
-      free(node->key);
-      free(node);
-   }
-   //No left child
-   else if(node->left == tree->nil){
-      free(node->key);
-      tmp_node = node->right;
-      node->key = node->right->key;
-      node->value = node->right->value;
-      node->left = node->right->left;
-      node->right = node->right->right;
-      free(tmp_node);
-   }
-   //No right child
-   else if(node->right == tree->nil){
-      free(node->key);
-      tmp_node = node->left;
-      node->key = node->left->key;
-      node->value = node->left->value;
-      node->right = node->left->right;
-      node->left = node->left->left;
-      free(tmp_node);
-   }
-   else { //translpant the smallest right descendant
-      tmp_node = node->right;
-      while(tmp_node->left != tree->nil){
-         tmp_node = tmp_node->left;
-      }
-      free(node->key);
-      node->key = tmp_node->key;
-      node->value = tmp_node->value;
-      if(tmp_node->parent == node){
-         node->right = tree->nil;
-      } else {
-         tmp_node->parent->left = tree->nil;
-      }
-
-      free(tmp_node);
-   }
-   return 0;
-   
-}
-
 int tree_lookup(Tree *tree, void *key, void **value){
    Tree_node *node = tree->root;
    if(node==tree->nil) return 1;
@@ -273,8 +203,38 @@ int tree_lookup(Tree *tree, void *key, void **value){
    *value = node->value;
    return 0;
 }
-int tree_height(Tree *tree){}
-void tree_destroy(Tree *tree){}
+
+int tree_node_depth(Tree *tree, Tree_node *node){
+   int height = 1;
+   while(node != tree->root){
+      node = node->parent;
+      height++;
+   }
+   return height;
+}
+
+int tree_height(Tree *tree, Tree_node * node){
+   /*This takes O(n) time */
+   if(node == tree->nil) return 0;
+   int hl = tree_height(tree, node->left);
+   int hr = tree_height(tree, node->right);
+   return 1 + (hl > hr? hl : hr);
+}
+
+void tree_node_destroy(Tree *tree, Tree_node *node){
+   if(node == tree->nil) return;
+   tree_node_destroy(tree, node->left);
+   tree_node_destroy(tree, node->right);
+   free(node->key);
+   free(node->value);
+   free(node);
+}
+
+void tree_destroy(Tree *tree){
+  tree_node_destroy(tree, tree->root);
+  free(tree->nil);
+  free(tree);
+}
 
 void tree_balance_insert(Tree *tree, Tree_node *node){
    Tree_node *parent, *uncle, *gp;

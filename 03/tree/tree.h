@@ -10,6 +10,7 @@ typedef struct Tree_node_ {
    struct Tree_node_ * parent;
    void (*print)(void *key, void *value);
    Color color;
+   int height;
 } Tree_node;
 
 typedef struct Tree_{
@@ -27,5 +28,5 @@ void tree_destroy(Tree *tree);
 int tree_insert(Tree *tree, void *key, void *value);
 int tree_remove(Tree *tree, void *key, void **value);
 int tree_lookup(Tree *tree, void *key, void **value);
-int tree_height(Tree *tree);
+int tree_height(Tree *tree, Tree_node *node);
 void tree_print_inorder(Tree *tree);

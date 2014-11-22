@@ -1,6 +1,8 @@
 /** interface between interactive layer and red-black tree */
 
 #include "tree.h"
+#define LOG 1
+#define LOGFILE "tree.log"
 
 /*t_node is actully Tree, not Tree_node. Unfortunately i've had to keep
  * this nomencluature in the interactive moduel  for consistency
