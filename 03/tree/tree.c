@@ -9,11 +9,12 @@ void tree_balance_insert(Tree *tree, Tree_node *node);
 void tree_left_rotate(Tree *tree, Tree_node *node);
 void tree_right_rotate(Tree *tree, Tree_node *node);
 
-Tree_node *tree_new_node(void *key, void *value, void(*print)(void*key, void*value)){
+Tree_node *tree_new_node(Tree * tree, void *key, void *value, void(*print)(void*key, void*value)){
    Tree_node *node;
    if((node = malloc(sizeof(Tree_node)))==NULL)
       return NULL;
-   node->left = node->right = node->parent = NULL;
+   node->left = node->right = tree->nil;
+   node->parent = NULL;
    node->key = strdup(key);
    node->value = strdup(value);
    node->color = RED;
@@ -21,33 +22,32 @@ Tree_node *tree_new_node(void *key, void *value, void(*print)(void*key, void*val
    return node;
 }
 
-void tree_node_print(Tree_node * node, int depth){
+void tree_node_print(Tree * tree, Tree_node * node, int depth){
    int i;
-   if(node==NULL) return;
+   if(node==tree->nil) return;
    for(i=0; i<depth; i++) printf(" ");
    printf("%d", node->color);
    node->print(node->key, node->value);
-   tree_node_print(node->left, depth+1);
-   tree_node_print(node->right, depth+1);
+   tree_node_print(tree, node->left, depth+1);
+   tree_node_print(tree, node->right, depth+1);
 }
-void tree_node_print_inorder(Tree_node * node){
-   if(node==NULL) return;
-   tree_node_print_inorder(node->left);
+void tree_node_print_inorder(Tree *tree, Tree_node * node){
+   if(node==tree->nil) return;
+   tree_node_print_inorder(tree, node->left);
    node->print(node->key, node->value);
-   tree_node_print_inorder(node->right);
+   tree_node_print_inorder(tree, node->right);
 }
 
 void tree_print_tree(Tree *tree){
-   tree_node_print(tree->root, 0);
+   tree_node_print(tree, tree->root, 0);
 }
 void tree_print_inorder(Tree *tree){
-   tree_node_print_inorder(tree->root);
+   tree_node_print_inorder(tree, tree->root);
 }
 
 int tree_init(Tree *tree, int(*compare)(void *key1, void *key2), 
       void(*print)(void *key, void *value)){
    Tree_node * nil = malloc(sizeof(Tree_node));
-   tree->root = NULL;
    tree->compare = compare;
    tree->print = print;
    nil->left = nil->right = nil->parent = NULL;
@@ -55,21 +55,22 @@ int tree_init(Tree *tree, int(*compare)(void *key1, void *key2),
    nil->key = nil->value = NULL;
    nil->print = NULL;
    tree->nil = nil;
+   tree->root = tree->nil;
    return 0;
 }
 
 int tree_insert(Tree *tree, void *key, void *value){
    Tree_node *new_node, *node, *parent;
    int left;
-   if((new_node = tree_new_node(key, value, tree->print))==NULL)
+   if((new_node = tree_new_node(tree, key, value, tree->print))==NULL)
       return -1;
-   if(tree->root == NULL){ //tree is emtpy
+   if(tree->root == tree->nil){ //tree is emtpy
          new_node->color = BLACK;
          tree->root = new_node;
          return 0;
       } else { //tree is not empty
          node = tree->root;
-         while(node != NULL){ //we search the tree
+         while(node != tree->nil){ //we search the tree
             if(tree->compare(key, node->key) == 0){ //key already present 
                return 1;
             }
@@ -116,18 +117,18 @@ int tree_remove(Tree *tree, void *key, void **value){
    //Now we delete
 
    //Outer node
-   if(node->left == NULL && node->right == NULL){
+   if(node->left == tree->nil && node->right == tree->nil){
       if(tree->root == node){ //node is root
-         tree->root = NULL;
+         tree->root = tree->nil;
       } else {
-         if(left) node->parent->left = NULL;
-         else node->parent->right = NULL;
+         if(left) node->parent->left = tree->nil;
+         else node->parent->right = tree->nil;
       }
       free(node->key);
       free(node);
    }
    //No left child
-   else if(node->left == NULL){
+   else if(node->left == tree->nil){
       free(node->key);
       tmp_node = node->right;
       node->key = node->right->key;
@@ -137,7 +138,7 @@ int tree_remove(Tree *tree, void *key, void **value){
       free(tmp_node);
    }
    //No right child
-   else if(node->right == NULL){
+   else if(node->right == tree->nil){
       free(node->key);
       tmp_node = node->left;
       node->key = node->left->key;
@@ -148,16 +149,16 @@ int tree_remove(Tree *tree, void *key, void **value){
    }
    else { //translpant the smallest right descendant
       tmp_node = node->right;
-      while(tmp_node->left != NULL){
+      while(tmp_node->left != tree->nil){
          tmp_node = tmp_node->left;
       }
       free(node->key);
       node->key = tmp_node->key;
       node->value = tmp_node->value;
       if(tmp_node->parent == node){
-         node->right = NULL;
+         node->right = tree->nil;
       } else {
-         tmp_node->parent->left = NULL;
+         tmp_node->parent->left = tree->nil;
       }
 
       free(tmp_node);
@@ -168,13 +169,13 @@ int tree_remove(Tree *tree, void *key, void **value){
 
 int tree_lookup(Tree *tree, void *key, void **value){
    Tree_node *node = tree->root;
-   if(node==NULL) return 1;
+   if(node==tree->nil) return 1;
    while(tree->compare(node->key, key)!=0){
      if(tree->compare(key, node->key) < 0)
         node = node->left;
      else
         node = node->right;
-     if(node == NULL) return 1;
+     if(node == tree->nil) return 1;
    }
    *value = node->value;
    return 0;
