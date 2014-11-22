@@ -40,13 +40,13 @@ void reset_occupancy(int buckets){
  * The choice of function can be made in chtbl.h file*/
 
 #ifdef HASH1
-int hashfun(const void *key_){
+unsigned long int hashfun(const void *key_){
    /*HASH1*/
    /*Simple function that adds ascii value of each character*/
    Dpair * key = (Dpair *)key_;
    char * word = key->word;
    int i;
-   int prehash = 0;
+   unsigned long int prehash = 0;
    for(i=0; i<strlen(word); i++){
       prehash += word[i];
    }
@@ -55,14 +55,14 @@ int hashfun(const void *key_){
 #endif
 
 #ifdef HASH2
-int hashfun(const void *key_){
+unsigned long int hashfun(const void *key_){
    /*HASH2*/
    /*We consider the first 4 characters and treat them like a number 
     * to the base 2^8 */
    Dpair * key = (Dpair *)key_;
    char * word = key->word;
    int i, j, k;
-   int prehash = 0;
+   unsigned long int prehash = 0;
    for(i=0; i<strlen(word) && i<4; i++){
       k = 1;
       for(j=4; j>i; j--)
@@ -74,7 +74,7 @@ int hashfun(const void *key_){
 #endif
 
 #ifdef HASH3
-int hashfun(const void *key_){
+unsigned long int hashfun(const void *key_){
    /*HASH3*/
    /*from http://www.cse.yorku.ca/~oz/hash.html*/
    /*this algorithm (k=33) was first reported by dan bernstein 
@@ -87,7 +87,7 @@ int hashfun(const void *key_){
    Dpair * key = (Dpair *)key_;
    char * word = key->word;
    int i;
-   unsigned int hash = 5831;
+   unsigned long int hash = 5831;
    for(i=0; i<strlen(word) && i<4; i++)
       hash = hash * 33 ^ word[i]; /* hash * 33 + c */
    return hash;
@@ -272,7 +272,7 @@ void t_destroy(t_node * table){
 
 int chtbl_init(CHTbl *htbl, 
       int buckets, 
-      int (*h)(const void *key), 
+      unsigned long int (*h)(const void *key), 
       int (*match)(const void *key1, const void *key2), 
       int (*destroy)(void *data)){
    int i;
@@ -349,11 +349,6 @@ int chtbl_remove(CHTbl *htbl, void **data){
    if(htbl->match(*data, list_data(list_head(bucket_list)))){
    /* remove it if it is */
       list_rem_next(bucket_list, NULL, (const void **)data);
-   /* alter occupancy */
-      if(occupancy_matrix[bucket]==1){
-      occupancy_matrix[bucket] = 0;
-      occupancy--;
-      }
    } else {
       /*there must be at least 2 elements since there is a data match
        * and it's not with the list head */
@@ -363,9 +358,16 @@ int chtbl_remove(CHTbl *htbl, void **data){
          if (htbl->match(*data, list_data(element))) {
             list_rem_next(bucket_list, prev_element, (const void **)data);
             htbl->size--;
+
+            /* alter occupancy if bucket is empty*/
+            if(bucket_list->size == 0){
+               occupancy_matrix[bucket] = 0;
+               occupancy--;
+            }
+            prev_element = element;
+
             return 0;
          }
-         prev_element = element;
       }
    }
    htbl->size--;

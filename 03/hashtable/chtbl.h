@@ -4,12 +4,12 @@
 #define LOGFILE "chtbl.log"
 #define HIGHLOADLIMIT 3 //upper loading factor after which we rehash
 #define LOWLOADLIMIT 1 //lower loading factor after which we rehash
-#define HASH2 //change to HASH1, HASH2 or HASH3 to use the other hashing functions
+#define HASH1 //change to HASH1, HASH2 or HASH3 to use the other hashing functions
 
 
 typedef struct CHTbl_ {
    int                        buckets; /* M in class terminology */
-   int                        (*h)(const void *key); /* this is just g, f is built in */
+   unsigned long int          (*h)(const void *key); /* this is just g, f is built in */
    int                        (*match)(const void *key1, const void *key2);
    int                        (*destroy)(void *data);
    int                        size; /* n in class terminology */
@@ -36,8 +36,8 @@ void t_print_range(t_node *table, char * word1, char *word2);
 
 /* hashtable functions */
 
-int chtbl_init(CHTbl *htbl, int buckets, int (*h)(const void *key), int        
-      (*match)(const void *key1, const void *key2), int (*destroy)(void *data));
+int chtbl_init(CHTbl *htbl, int buckets, unsigned long int (*h)(const void *key), 
+      int (*match)(const void *key1, const void *key2), int (*destroy)(void *data));
 void chtbl_destroy(CHTbl *htbl);
 int chtbl_insert(CHTbl *htbl, const void *data);
 int chtbl_remove(CHTbl *htbl, void **data);
