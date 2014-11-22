@@ -43,8 +43,8 @@ char *t_find(t_node *tree, char *key){
 }
 
 int t_print(t_node *tree){
-  // tree_print_tree(tree);
-   tree_print_inorder(tree);  
+  tree_print_tree(tree);
+  // tree_print_inorder(tree);  
 }
 int t_print_range(t_node *tree, char *word1, char *word2){}
 int t_height(t_node *tree){}

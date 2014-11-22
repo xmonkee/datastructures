@@ -14,6 +14,7 @@ typedef struct Tree_node_ {
 
 typedef struct Tree_{
    Tree_node * root;
+   Tree_node * nil;
    int (*compare)(void *key1, void *key2);
    void (*print)(void *key, void *value);
 } Tree;
