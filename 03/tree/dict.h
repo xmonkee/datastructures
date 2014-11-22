@@ -16,5 +16,6 @@ int t_insert(t_node *node, char *key, char *value);
 int t_delete(t_node *node, char *key);
 char *t_find(t_node *node, char *key);
 int t_print(t_node *node);
+int t_print_tree(t_node *node);
 int t_print_range(t_node *node, char *word1, char *word2);
 int t_height(t_node *node);

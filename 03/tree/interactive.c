@@ -13,6 +13,7 @@
 #define PRINT "print"
 #define EXIT "exit"
 #define READ "read"
+#define TPRINT "tprint" //print in tree format... secret option
 
 int main(){
    FILE *f;
@@ -75,6 +76,10 @@ int main(){
       //Print Case
       else if(strcmp(PRINT, instr) == 0){
          t_print(root);
+      }
+      //Tree Print Case
+      else if(strcmp(TPRINT, instr) == 0){
+         t_print_tree(root);
       }
 
       //Read case

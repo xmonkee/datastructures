@@ -11,8 +11,8 @@ int compare(void *key1, void *key2){
 }
 
 void print(void *key, void *value){
-  // printf("%s: %s\n", (char*)key, (char*)value);
-  printf("%s\n", (char*)key);
+  printf("%s: %s\n", (char*)key, (char*)value);
+  //printf("%s\n", (char*)key);
 }
 
 t_node *t_init(void){
@@ -42,10 +42,14 @@ char *t_find(t_node *tree, char *key){
       return value;
 }
 
-int t_print(t_node *tree){
+int t_print_tree(t_node *tree){
   tree_print_tree(tree);
-  // tree_print_inorder(tree);  
 }
-int t_print_range(t_node *tree, char *word1, char *word2){}
+int t_print(t_node *tree){
+  tree_print_inorder(tree);  
+}
+int t_print_range(t_node *tree, char *word1, char *word2){
+   tree_print_range(tree, (void *)word1, (void *)word2);
+}
 int t_height(t_node *tree){}
 void t_destroy(t_node *tree){}
