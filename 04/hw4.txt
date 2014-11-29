@@ -1,0 +1,42 @@
+
+mework 4
+Graphs/Multicore
+MPCS 51100
+due: 12/10/2014
+
+
+1. Consider the shortest path problem for a directed, weighted graph
+G(E,V).  We learned that Dijkstra's algorithm finds the distance between
+any source node S and all other nodes in the graph in O(|V|^2)
+operations. A similar problem, the all-source shortest path problem, finds
+the minimum distance between EACH vertex v in a graph and all other
+vertices.
+
+a) Write a code that solves the all source shortest path problem by
+simplying applying Dijkstra n = |V| times, i.e. once for each vertex
+in G.  Note that this algorithm has complexity n^3.
+
+b) Next write a shared memory parallel version of (a) using OpenMP.
+Your strategy will be straightforward -- simply assign a different
+source vertex to each core. Assume n > p, where p is the number of
+processors (i.e.  cores) on a multicore machine. What is the
+complexity of the parallel algorithm in terms of n and p? Compare the
+performance of the serial and parallel approach using the provided
+sample graph. Comment briefly on the observed timings.
+
+2. Next, consider how you might use a shared memory parallel processor
+to accelerate Dijskstra *within* a single source computation? There
+are several possible approaches, and developing a reasonable approach
+yourself (doesn't have to be optimal) is part of the exercise. In this
+case, to guide your thinking you may assume that n is much larger than
+p -- i.e there are many more vertices than cores. Consider ways to
+partition the graph among processors to minmize contention and load
+balance -- ie to keep all cores busy but require minimum
+synchronization.
+
+a) write pseudocode to describe your approach
+b) implement the psuedocode in C/OpenMP
+
+Note that you get 50% credit for just the psuedo-code -- ie a
+non-trivial part of the exercise involves developing a reasonable
+approach.
