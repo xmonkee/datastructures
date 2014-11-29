@@ -12,6 +12,8 @@ int main(int argc, char ** argv){
 
    FILE *f;
    Graph * G;
+   float *d;
+   int i;
 
    if(argc < 2){
       printf("Please supply filename \n");
@@ -29,7 +31,10 @@ int main(int argc, char ** argv){
    graph_print(G);
    printf("%d\n", graph_vertices(G));
 
-   dijkstra_single_source(G, 1);
+   d = dijkstra_single_source(G, 0);
+   for(i = 0; i<graph_vertices(G); i++)
+      printf("%.0f ", d[i]);
+   printf("\n");
 }
 
 float *dijkstra_single_source(Graph *G, int s){
@@ -44,8 +49,8 @@ float *dijkstra_single_source(Graph *G, int s){
 
    init_single_source(G, s, d, p, processed); 
    while (nprocessed < N){
-      u = get_min(d,processed, N);
-      for(edge=graph_adjlist(G,u);edge!=NULL;edge=edge_next(edge)){
+      u = get_min(d, processed, N);
+      for(edge = graph_adjlist(G,u); edge != NULL; edge = edge_next(edge)){
          v = edge_target(edge);
          if(d[v] > d[u] + edge_weight(edge)){
             d[v] = d[u] + edge_weight(edge);
@@ -74,7 +79,7 @@ int get_min(float *d, boolean *processed, int N){
    float min = INFINITY;
    int minidx;
    for(i=0; i<N; i++){
-      if(processed[i] && d[i] < min){
+      if(!processed[i] && d[i] < min){
          min = d[i];
          minidx = i;
       }

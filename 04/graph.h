@@ -31,11 +31,11 @@ int graph_add_vertex(Graph * G, int u, Adjlist ** adjlist);
 Adjlist * adjlist_new(int v, float weight);
 //adds new Adjlist at vertex u, replacing theh old one if there was any
 
-#define graph_vertices(G) (G)->N
-#define graph_edges(G) (G)->E
-#define graph_degrees(G, u) (G)->degrees[u]
-#define graph_is_vertex(G, u) (G)->isVertex[u]
-#define graph_adjlist(G, u) (G)->V[(u)];
-#define edge_next(a) (a)->next;
-#define edge_target(a) (a)->v;
-#define edge_weight(a) (a)->w;
+#define graph_vertices(G) ((G)->N)
+#define graph_edges(G) ((G)->E)
+#define graph_degrees(G, u) ((G)->degrees[u])
+#define graph_is_vertex(G, u) ((G)->isVertex[u])
+#define graph_adjlist(G, u) ((G)->V[(u)])
+#define edge_next(a) ((a)->next)
+#define edge_target(a) ((a)->v)
+#define edge_weight(a) ((a)->w)
