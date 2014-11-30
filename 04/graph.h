@@ -5,10 +5,8 @@
  * of edge (i, v) and a link to the next node on the list. 
  */
 
+#include <stdio.h>
 #define MAXV 10
-
-typedef enum {FALSE, TRUE} boolean;
-
 
 typedef struct Adjlist {
    int v; 
@@ -30,6 +28,7 @@ int graph_read_from_file(Graph * G, FILE * f);
 int graph_add_vertex(Graph * G, int u, Adjlist ** adjlist); 
 Adjlist * adjlist_new(int v, float weight);
 //adds new Adjlist at vertex u, replacing theh old one if there was any
+
 
 #define graph_vertices(G) ((G)->N)
 #define graph_edges(G) ((G)->E)

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include "boolean.h"
 #include "graph.h"
 
 #define MAXLINE 1000
@@ -14,6 +15,15 @@ Adjlist *adjlist_new(int v, float weight){
    e->w = weight;
    e->next = NULL;
    return e;
+}
+
+void adjlist_destroy(Adjlist * a){
+   Adjlist * tmp;
+   while(a != NULL){
+      tmp = a->next;
+      free(a);
+      a = tmp;
+   }
 }
 
 int graph_init(Graph *G){
@@ -81,6 +91,7 @@ int graph_read(Graph * G, FILE *f, int start){
       }
       graph_add_vertex(G, u, &head);
    }
+   free(tofree);
    return 0;
 } 
 
@@ -96,5 +107,20 @@ void graph_print(Graph *G){
       printf("\n");
       i++;
    }
+}
+
+
+void graph_destroy(Graph *G){
+   int i;
+   Adjlist * a, *tmp;
+   for (i=0; i<G->N;){
+      for(; !(G->isVertex[i]); i++) 
+         ;
+      adjlist_destroy(G->V[i]);
+      i++;
+   }
+   free(G->V);
+   free(G->degrees);
+   free(G->isVertex);
 }
 
