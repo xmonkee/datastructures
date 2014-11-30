@@ -6,7 +6,7 @@
  */
 
 #include <stdio.h>
-#define MAXV 10
+#define MAXV 1000
 
 typedef struct Adjlist {
    int v; 

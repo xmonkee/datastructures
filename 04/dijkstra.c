@@ -27,12 +27,12 @@ void dijkstra_single_source(Graph *G, int s, float *d, int *p){
    init_single_source(G, s, d, p);
    pq_init(Q, d, N);
    
-
    while (!pq_is_empty(Q)){
       u = pq_extract_min(Q);
       for(edge = graph_adjlist(G,u); edge != NULL; 
             edge = edge_next(edge)){
          v = edge_target(edge);
+         if(v>=1000) printf("%d %d\n", u, v);
          if(d[v] > d[u] + edge_weight(edge)){
             d[v] = d[u] + edge_weight(edge);
             p[v] = u;

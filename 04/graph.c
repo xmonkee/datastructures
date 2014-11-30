@@ -5,7 +5,7 @@
 #include "boolean.h"
 #include "graph.h"
 
-#define MAXLINE 1000
+#define MAXLINE 10000
 
 Adjlist *adjlist_new(int v, float weight){
    Adjlist * e;
@@ -69,12 +69,15 @@ int graph_add_vertex(Graph *G, int u, Adjlist ** adjlist){
 }
 
 int graph_read(Graph * G, FILE *f, int start){
-   int i, u, v;
+   int i, u, v, N;
+
    float w;
    char *line, *tofree;
    Adjlist *head, *tail, *tmp;
-   tofree = malloc(sizeof(char)*MAXLINE);
-   while(!feof(f)){ //loops over each line
+   tofree = line = malloc(sizeof(char)*MAXLINE);
+   fgets(line, 10, f); //read number of vertices
+   N = atoi(line);
+   for(i=0;i<N;i++){ //loops over each line
       line = tofree;
       fgets(line, MAXLINE, f);
       u = atoi(strsep(&line, " \n"));

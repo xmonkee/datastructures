@@ -24,12 +24,20 @@ int pq_init(PQ *pq, float *d, int N){
 
 int pq_extract_min(PQ *pq){
    int i;
-   float min = INFINITY;
+   float min;
    int minidx;
+   boolean found_any=FALSE;
    for(i=0; i<pq->N; i++){
-      if(!(pq->extracted[i]) && pq->values[i] < min){
-         min = pq->values[i];
-         minidx = i;
+      if(!(pq->extracted[i])){
+         if(!found_any){ //to assign at least one value to min
+            minidx = i;
+            min = pq->values[i];
+            found_any = TRUE;
+         }
+         if(pq->values[i] < min){
+            min = pq->values[i];
+            minidx = i;
+         }
       }
    }
    pq->nextracted++;

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <omp.h>
 #include "graph.h"
 #include "dijkstra.h"
 
@@ -13,6 +14,7 @@ int main(int argc, char ** argv){
 
    FILE *f;
    Graph * G;
+   float time;
 
    if(argc < 2){
       printf("Please supply filename \n");
@@ -27,13 +29,15 @@ int main(int argc, char ** argv){
    G = malloc(sizeof(Graph));
    graph_init(G);
    graph_read(G, f); //read graph from input file
+   fclose(f);
 
-#ifdef VERBOSE
-   graph_print(G); //display graph
-#endif
+   //graph_print(G); //display graph
 
 
+
+   time=omp_get_wtime();
    run_all_sources(G); 
+   printf("Time: %f\n", omp_get_wtime()-time);
 
    
    graph_destroy(G);
