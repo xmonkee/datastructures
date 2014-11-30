@@ -69,7 +69,7 @@ void run_single_source(Graph *G, int source){
 
 void run_all_sources(Graph *G){
    int i;
-#pragma omp parallel for
+#pragma omp parallel for default(none) shared(G)
    for(i = 0; i<G->N; i++){
       run_single_source(G, i);
    }
