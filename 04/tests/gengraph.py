@@ -3,7 +3,7 @@
 
 #Author: Mayank Mandava (mayankmandava@gmail.com)
 #Graph file generator
-#Usage: python gengraph.py N outfile
+#Usage: python gengraph.py num-vertices outfile
 #N is number of vertices
 #File format:
 #   source-vertex  target-vertex  weight

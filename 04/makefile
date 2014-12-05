@@ -1,10 +1,17 @@
+GCC = gcc -fopenmp
+
 all: singlesource allsources
 
+verbose: GCC += -DVERBOSE
+verbose: all
+
+debug: GCC += -g
+debug: all
+
 singlesource:
-	gcc -o dijkstra_single graph.c dijkstra.c minpq_parallel.c \
-		main.c -D SINGLESOURCE -fopenmp
+	$(GCC) -o dijkstra_single graph.c dijkstra.c minpq_parallel.c \
+		main.c
 
 allsources:
-	gcc -o dijkstra_all graph.c dijkstra.c minpq.c \
-		main.c -D ALLSOURCES -fopenmp
-
+	$(GCC) -o dijkstra_all graph.c dijkstra.c minpq.c \
+		main.c -DALLSOURCES
