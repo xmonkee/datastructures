@@ -6,10 +6,7 @@
 #Usage: python gengraph.py N outfile
 #N is number of vertices
 #File format:
-#   First line is a single number indicating total number of indices
-#   Following lines:
-#   u v1 w1 v2 w2....
-#   ==> Vertex number (u) followed by pairs of it's neighbors and edge wt
+#   source-vertex  target-vertex  weight
 
 
 
@@ -17,16 +14,14 @@ import random
 import sys
 
 def gen_graph(N):
-   out = "%s\n"%N #first line is number of vertices
+   out = ""
    for u in range(N):
-      out += "%s" % u
-      degrees = random.randint(0,N)
+      degrees = random.randint(0,min(100, max(min(10,N),N/10)))
       for j in range(degrees):
          v = random.randint(0,N-1)
          if v != u:
             wt = random.randint(0,1000)
-            out += " %s %s" % (v, wt)
-      out += "\n"
+            out += " %s %s %s\n" % (u, v, wt)
    return out
 
 

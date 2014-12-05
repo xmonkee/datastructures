@@ -4,10 +4,14 @@
 #include "graph.h"
 #include "minpq.h"
 
+
+/* A minimum priority queue implemented with a simple array, 
+ * *NOT* a binary heap 
+ */
+
 int pq_init(PQ *pq, float *d, int N){
 
    boolean *extracted = malloc(N*sizeof(boolean));
-   
 
    int i;
    for(i=0; i<N; i++){
@@ -30,11 +34,10 @@ int pq_extract_min(PQ *pq){
    for(i=0; i<pq->N; i++){
       if(!(pq->extracted[i])){
          if(!found_any){ //to assign at least one value to min
-            minidx = i;
             min = pq->values[i];
+            minidx = i;
             found_any = TRUE;
-         }
-         if(pq->values[i] < min){
+         } else if(pq->values[i] < min) {
             min = pq->values[i];
             minidx = i;
          }
@@ -52,5 +55,3 @@ boolean pq_is_empty(PQ *pq){
 void pq_destroy(PQ *pq){
    free(pq->extracted);
 }
-
-

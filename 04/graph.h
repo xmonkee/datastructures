@@ -6,7 +6,6 @@
  */
 
 #include <stdio.h>
-#define MAXV 1000
 
 typedef struct Adjlist {
    int v; 
@@ -16,7 +15,6 @@ typedef struct Adjlist {
 
 typedef struct Graph {
    Adjlist ** V; //array of Adjlists
-   int * isVertex; //keeps track of locations where there's a vertex
    int * degrees; //keeps track of number of edges for each vertex
    int N; //number of vertices
    int E; //number of edges
@@ -24,16 +22,12 @@ typedef struct Graph {
 
 
 int graph_init(Graph * G); //returns an empty graph
-int graph_read_from_file(Graph * G, FILE * f); 
-int graph_add_vertex(Graph * G, int u, Adjlist ** adjlist); 
-Adjlist * adjlist_new(int v, float weight);
-//adds new Adjlist at vertex u, replacing theh old one if there was any
+int graph_read(Graph * G, FILE * f); //read an input file
 
 
 #define graph_vertices(G) ((G)->N)
 #define graph_edges(G) ((G)->E)
 #define graph_degrees(G, u) ((G)->degrees[u])
-#define graph_is_vertex(G, u) ((G)->isVertex[u])
 #define graph_adjlist(G, u) ((G)->V[(u)])
 #define edge_next(a) ((a)->next)
 #define edge_target(a) ((a)->v)

@@ -5,7 +5,8 @@
 #include "boolean.h"
 #include "graph.h"
 
-#define MAXLINE 10000
+#define MAXLINE 100
+#define MAXV 1000000 /* Maximum number of vertices */
 
 Adjlist *adjlist_new(int v, float weight){
    Adjlist * e;
@@ -32,78 +33,41 @@ int graph_init(Graph *G){
    G->E = 0;
    if((G->V = malloc(sizeof(Adjlist *)*MAXV))==NULL)
       return -1;
-   if((G->isVertex = malloc(sizeof(int)*MAXV))==NULL)
-      return -1;
    if((G->degrees = malloc(sizeof(int)*MAXV))==NULL)
       return -1;
    for(i = 0; i < MAXV; i++){
-      G->isVertex[i] = FALSE;
       G->degrees[i] = 0;
       G->V[i] = NULL;
    }
    return 0;
 }
 
-int graph_add_vertex(Graph *G, int u, Adjlist ** adjlist){
-
+int graph_add_edge(Graph *G, int source, int target, float weight){
    Adjlist *tmp;
 
-   //increase total vertices if adding to a new spot
-   if(!(G->isVertex[u])){ 
-      G->N++;
-      G->isVertex[u] = TRUE;
-   }
+   if(source >= G->N) G->N = source+1;
+   if(target >= G->N) G->N = target+1;
    
-   //replace list and return the old list (for deletion etc)
-   tmp = G->V[u];
-   G->V[u] = *adjlist; 
-   *adjlist = tmp;
-
-   //update number of degrees
-   G->degrees[u] = 0;
-   for(tmp = G->V[u]; tmp != NULL; tmp = tmp->next)
-      G->degrees[u]++;
-
-   return 0;
-
+   tmp = G->V[source];
+   G->V[source] = adjlist_new(target, weight);
+   G->V[source]->next = tmp;
+   
 }
 
-int graph_read(Graph * G, FILE *f, int start){
-   int i, u, v, N;
-
+int graph_read(Graph *G, FILE *fp){
+   int u, v;
    float w;
-   char *line, *tofree;
-   Adjlist *head, *tail, *tmp;
-   tofree = line = malloc(sizeof(char)*MAXLINE);
-   fgets(line, 10, f); //read number of vertices
-   N = atoi(line);
-   for(i=0;i<N;i++){ //loops over each line
-      line = tofree;
-      fgets(line, MAXLINE, f);
-      u = atoi(strsep(&line, " \n"));
-      head = tail =  NULL;
-      while(line != '\0' && strcmp(line, "")!=0){ //loop over each edge
-         v = atoi(strsep(&line, " \n"));
-         w = atof(strsep(&line, " "));
-         if(head == NULL)
-            head = tail = adjlist_new(v, w);
-         else{
-            tail->next = adjlist_new(v,w);
-            tail = tail->next;
-         }
-      }
-      graph_add_vertex(G, u, &head);
+   while(!feof(fp)){
+      if(fscanf(fp, "%d %d %f", &u, &v, &w)!=3)
+         continue;
+      graph_add_edge(G, u, v, w);
    }
-   free(tofree);
-   return 0;
-} 
+}
 
 void graph_print(Graph *G){
    int i;
    Adjlist * a;
    for (i=0; i<G->N;){
-      for(; !(G->isVertex[i]); i++) 
-         ;
       printf("%d : ", i);
       for(a = G->V[i]; a != NULL; a = a->next)
          printf("(%d,%.0f) ", a->v, a->w);
@@ -117,13 +81,10 @@ void graph_destroy(Graph *G){
    int i;
    Adjlist * a, *tmp;
    for (i=0; i<G->N;){
-      for(; !(G->isVertex[i]); i++) 
-         ;
       adjlist_destroy(G->V[i]);
       i++;
    }
    free(G->V);
    free(G->degrees);
-   free(G->isVertex);
 }
 

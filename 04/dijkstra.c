@@ -32,7 +32,6 @@ void dijkstra_single_source(Graph *G, int s, float *d, int *p){
       for(edge = graph_adjlist(G,u); edge != NULL; 
             edge = edge_next(edge)){
          v = edge_target(edge);
-         if(v>=1000) printf("%d %d\n", u, v);
          if(d[v] > d[u] + edge_weight(edge)){
             d[v] = d[u] + edge_weight(edge);
             p[v] = u;
