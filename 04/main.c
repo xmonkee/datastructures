@@ -71,10 +71,11 @@ int main(int argc, char ** argv){
    graph_destroy(G);
    free(G);
 
+   return 0;
+
 }
 
 void run_single_source(Graph *G, int source){
-   int i, tmp;
    int N = graph_vertices(G);
    float *d = malloc(sizeof(float)*N); //distance array
    int *p = malloc(sizeof(int*)*N); //parent array
@@ -86,6 +87,7 @@ void run_single_source(Graph *G, int source){
       {
    #endif
    fprintf(ofile, "Source %d\n", source);
+   int i;
    for(i = 0; i<graph_vertices(G); i++) 
       fprintf(ofile, "%d, %.0f, %d\n", i, d[i], p[i]);
       //print the vertex, it's path wt and it's parent

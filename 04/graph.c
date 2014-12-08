@@ -51,6 +51,7 @@ int graph_add_edge(Graph *G, int source, int target, float weight){
    tmp = G->V[source];
    G->V[source] = adjlist_new(target, weight);
    G->V[source]->next = tmp;
+   return 0;
    
 }
 
@@ -64,6 +65,7 @@ int graph_read(Graph *G, FILE *fp){
       }
       graph_add_edge(G, u, v, w);
    }
+   return 0;
 }
 
 void graph_print(Graph *G){
@@ -81,7 +83,6 @@ void graph_print(Graph *G){
 
 void graph_destroy(Graph *G){
    int i;
-   Adjlist * a, *tmp;
    for (i=0; i<G->N;){
       adjlist_destroy(G->V[i]);
       i++;

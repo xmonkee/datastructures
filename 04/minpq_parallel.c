@@ -4,6 +4,7 @@
 #include "boolean.h"
 #include "graph.h"
 #include "minpq.h"
+#include "omp.h"
 
 
 /* A minimum priority queue implemented with a simple array, 

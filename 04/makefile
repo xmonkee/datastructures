@@ -1,4 +1,4 @@
-GCC = gcc -fopenmp
+GCC = gcc -fopenmp -Wall
 
 all: singlesource allsources
 

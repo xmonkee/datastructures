@@ -23,6 +23,7 @@ typedef struct Graph {
 
 int graph_init(Graph * G); //returns an empty graph
 int graph_read(Graph * G, FILE * f); //read an input file
+void graph_destroy(Graph *G);
 
 
 #define graph_vertices(G) ((G)->N)

@@ -9,3 +9,7 @@ typedef struct {
    float *values; //values of members
 } PQ;
 
+int pq_init(PQ *pq, float *d, int N);
+int pq_extract_min(PQ *pq);
+boolean pq_is_empty(PQ *pq);
+void pq_destroy(PQ *pq);
