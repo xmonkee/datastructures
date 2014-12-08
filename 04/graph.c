@@ -58,8 +58,10 @@ int graph_read(Graph *G, FILE *fp){
    int u, v;
    float w;
    while(!feof(fp)){
-      if(fscanf(fp, "%d %d %f", &u, &v, &w)!=3)
+      if(fscanf(fp, "%d %d %f", &u, &v, &w)!=3){
+         fscanf(fp, "%*[^\n]");
          continue;
+      }
       graph_add_edge(G, u, v, w);
    }
 }
